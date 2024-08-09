@@ -4,8 +4,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { useEffect, useState } from "react";
 
-// Fix default icon issue
-delete L.Icon.Default.prototype._getIconUrl;
+// Directly set icon options without deleting _getIconUrl
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
   iconUrl: require("leaflet/dist/images/marker-icon.png"),
