@@ -21,7 +21,7 @@ function Hero({ onAuthClick }: HeroProps) {
             </p>
             <button
               onClick={onAuthClick}
-              className="ml-4 px-6 py-3 bg-white text-blue-500 font-bold rounded-lg shadow-md"
+              className="ml-4 px-6 py-3 bg-white text-blue-500 font-bold rounded-lg shadow-md hover:bg-blue-100 transition-colors"
             >
               Get Started
             </button>
