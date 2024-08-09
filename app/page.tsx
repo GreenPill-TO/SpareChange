@@ -1,46 +1,43 @@
+// app/home/page.tsx
 "use client";
-import Link from "next/link";
-import GenerationStep from "@/components/home/generationStep";
-import Navbar from "@/components/Header";
-import { createClient } from "@/utils/supabase/client";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import Navbar from "@/components/home/Navbar";
+import Hero from "@/components/home/Hero";
+import Features from "@/components/home/Features";
+import HowItWorks from "@/components/home/HowItWorks";
+import Testimonials from "@/components/home/Testimonials";
+import CallToAction from "@/components/home/CallToAction";
+import Footer from "@/components/Footer";
+import CubidStarterHeader from "@/components/home/CubidStarterHeader";
+import Modal from "@/components/home/Modal";
+import Auth from "@/components/home/Auth";
+import { useTheme } from "@/context/ThemeContext"; // Import useTheme from ThemeContext
 
-function Hero() {
-  const supabase = createClient();
+export default function Home() {
+  const [isAuthModalOpen, setAuthModalOpen] = useState(false);
+  const { theme } = useTheme(); // Use theme from context
 
-  const { push } = useRouter();
+  const handleAuthClick = () => {
+    setAuthModalOpen(true);
+  };
 
-  useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (session?.user) {
-        push("/protected");
-      }
-    });
-  }, []);
+  const handleCloseModal = () => {
+    setAuthModalOpen(false);
+  };
+
   return (
-    <>
-      <Navbar />
-      <div className="hero py-12 bg-gradient-to-t from-blue-500 to-purple-700">
-        <div className="hero-content md:px-0 px-4 max-w-6xl flex-col lg:flex-row-reverse">
-          <img
-            src="https://plus.unsplash.com/premium_photo-1681319553238-9860299dfb0f?auto=format&fit=crop&q=80&w=2831&ixlib=rb-4.0.3"
-            className="max-w-sm  h-80 object-cover rounded-lg shadow-2xl"
-          />
-          <div>
-            <h1 className="text-5xl text-slate-100 font-bold md:leading-none leading-tight md:mt-0 mt-10">
-              Cubid Micro App Template
-            </h1>
-            <p className="py-2 text-xl text-slate-100 mt-4 pr-12">
-              Mciro App to speed up your dev processes when building cubid based
-              apps
-            </p>
-          </div>
-        </div>
-      </div>
-      <GenerationStep />
-    </>
+    <div className={`min-h-screen ${theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-gray-900"}`}>
+      <Navbar onAuthClick={handleAuthClick} />
+      <Hero onAuthClick={handleAuthClick} />
+      <Features />
+      <HowItWorks />
+      <Testimonials />
+      <CallToAction onAuthClick={handleAuthClick} />
+      <Footer />
+      <CubidStarterHeader />
+      <Modal isOpen={isAuthModalOpen} onClose={handleCloseModal}>
+        <Auth />
+      </Modal>
+    </div>
   );
 }
-
-export default Hero;

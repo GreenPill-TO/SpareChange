@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Bars3Icon from "@heroicons/react/24/outline/Bars3Icon";
-import NavProfileLinks from "./NavProfileLinks";
-import ModalLayout from "./ModalLayout";
+import NavProfileLinks from "../NavProfileLinks";
+import ModalLayout from "../ModalLayout";
 
 function Navbar() {
   return (
