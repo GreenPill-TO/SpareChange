@@ -1,50 +1,45 @@
-// /main/page.tsx
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/home/Navbar";
 
-// Define a type for the user data
 interface User {
   name: string;
 }
 
 export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true); // Add a loading state
   const [stats, setStats] = useState({ totalDonations: 0, totalCredits: 0 });
   const [recentActivity, setRecentActivity] = useState<string[]>([]);
-  const [isMounted, setIsMounted] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    setIsMounted(true); // Mark the component as mounted
-
-    // Logic to fetch user data
     const fetchUserData = async () => {
-      // Simulate fetching user data
+      // Simulating an API call to fetch user data
       const userData: User = await new Promise((resolve) =>
         setTimeout(() => resolve({ name: "John Doe" }), 1000)
       );
       setUser(userData);
+      setLoading(false); // Data is loaded
     };
 
     fetchUserData();
   }, []);
 
   useEffect(() => {
-    if (isMounted && !user) {
-      const router = useRouter(); // Call useRouter inside the useEffect
-      router.push("/login");
+    if (!loading && user === null) {
+      router.push("/login"); // Only redirect if user is null and loading is complete
     }
-  }, [isMounted, user]);
+  }, [user, loading, router]);
 
-  // Dummy onAuthClick function
-  const onAuthClick = () => {
-    console.log("Auth button clicked");
-  };
+  if (loading) {
+    return <div>Loading...</div>; // Show a loading message while fetching data
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar onAuthClick={onAuthClick} />
+      <Navbar onAuthClick={() => console.log("Auth button clicked")} />
       <div className="max-w-7xl mx-auto p-8">
         <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

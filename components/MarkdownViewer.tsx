@@ -8,9 +8,10 @@ import "highlight.js/styles/github.css";
 
 type MarkdownViewerProps = {
   filePath: string;
+  theme: string;
 };
 
-const MarkdownViewer = ({ filePath }: MarkdownViewerProps) => {
+const MarkdownViewer = ({ filePath, theme }: MarkdownViewerProps) => {
   const [content, setContent] = useState("");
 
   useEffect(() => {
@@ -24,7 +25,11 @@ const MarkdownViewer = ({ filePath }: MarkdownViewerProps) => {
   }, [filePath]);
 
   return (
-    <div className="prose mx-auto p-4 bg-white rounded shadow-md">
+    <div
+      className={`prose mx-auto p-4 rounded ${
+        theme === "dark" ? "bg-black text-white" : "bg-white text-black"
+      }`}
+    >
       <ReactMarkdown
         children={content}
         remarkPlugins={[remarkGfm]}

@@ -1,3 +1,4 @@
+// app/page.tsx
 "use client";
 import { useEffect, useState } from "react";
 import dynamic from 'next/dynamic'; // Import dynamic from next/dynamic
@@ -8,8 +9,8 @@ import HowItWorks from "@/components/home/HowItWorks";
 import Testimonials from "@/components/home/Testimonials";
 import CallToAction from "@/components/home/CallToAction";
 import Footer from "@/components/home/Footer";
-import CubidStarterHeader from "@/components/home/CubidStarterFooter";
 import Modal from "@/components/home/Modal";
+import CubidStarterFooter from "@/components/home/CubidStarterFooter";
 import { useTheme } from "@/context/ThemeContext";
 import { createClient } from "@supabase/supabase-js";
 
@@ -51,8 +52,8 @@ export default function HomeOrDashboard() {
       <HowItWorks />
       <Testimonials />
       <CallToAction onAuthClick={handleAuthClick} />
+      <CubidStarterFooter />
       <Footer />
-      <CubidStarterHeader />
       <Modal isOpen={isAuthModalOpen} onClose={handleCloseModal}>
         <Auth />
       </Modal>

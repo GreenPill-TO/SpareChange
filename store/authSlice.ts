@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { createClient } from "@/utils/supabase/client";
+import { getSupabaseClient } from "@/utils/supabase/client"; // Updated import
 import { RootState } from '@/store'; // Import RootState for type definitions
 
-const supabase = createClient();
+const supabase = getSupabaseClient(); // Use getSupabaseClient instead of createClient
 
 // Define the shape of the auth state
 interface AuthState {

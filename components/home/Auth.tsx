@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";  // Use next/navigation instead of next/router
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { sendPasscode, verifyPasscode, selectAuthStatus, selectAuthError, selectAuthMessage } from "@/store/authSlice";
 import { useTheme } from "@/context/ThemeContext";
 import { countryCodes, formatPhoneNumber } from "@/utils/phoneData";
-import { createClient } from "@/utils/supabase/client"; // Import Supabase client
+import { getSupabaseClient } from "@/utils/supabase/client"; // Import Supabase client
 
-const supabase = createClient(); // Initialize Supabase client
+const supabase = getSupabaseClient(); // Initialize Supabase client
 
 function Auth() {
   const { theme } = useTheme();
@@ -19,7 +19,7 @@ function Auth() {
   const [passcode, setPasscode] = useState('');
 
   const dispatch: AppDispatch = useDispatch();
-  const router = useRouter();  // Use the router without conditional checks
+  const router = useRouter();  // Use next/navigation's useRouter
 
   const isPasscodeSent = useSelector((state: RootState) => state.auth.isPasscodeSent);
   const authStatus = useSelector(selectAuthStatus);

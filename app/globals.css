@@ -1,3 +1,5 @@
+/* globals.css */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -18,9 +20,7 @@
       --foreground: 200 20% 96%;
     }
   }
-}
 
-@layer base {
   * {
     @apply border-foreground/20;
   }
