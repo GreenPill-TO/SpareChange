@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Navbar from "@/components/home/Navbar";
+import { NavbarAuthenticated } from "@/components/home/Navbar";
 
 interface User {
   name: string;
@@ -39,7 +39,9 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar onAuthClick={() => console.log("Auth button clicked")} />
+      <NavbarAuthenticated onAuthClick={() => console.log("Auth button clicked")} onLogoutClick={function (): void {
+        throw new Error("Function not implemented.");
+      } } />
       <div className="max-w-7xl mx-auto p-8">
         <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

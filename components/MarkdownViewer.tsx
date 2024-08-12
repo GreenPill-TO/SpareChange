@@ -34,6 +34,49 @@ const MarkdownViewer = ({ filePath, theme }: MarkdownViewerProps) => {
         children={content}
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw, rehypeHighlight]}
+        components={{
+          h1: ({ node, ...props }) => (
+            <h1
+              {...props}
+              className={`${
+                theme === "dark" ? "text-white font-bold" : "text-black"
+              }`}
+            />
+          ),
+          h2: ({ node, ...props }) => (
+            <h2
+              {...props}
+              className={`${
+                theme === "dark" ? "text-white font-semibold" : "text-black"
+              }`}
+            />
+          ),
+          h3: ({ node, ...props }) => (
+            <h3
+              {...props}
+              className={`${
+                theme === "dark" ? "text-white font-semibold" : "text-black"
+              }`}
+            />
+          ),
+          // Add similar customizations for other heading levels if needed
+          a: ({ node, ...props }) => (
+            <a
+              {...props}
+              className={`${
+                theme === "dark" ? "text-blue-400 underline" : "text-blue-600"
+              }`}
+            />
+          ),
+          strong: ({ node, ...props }) => (
+            <strong
+              {...props}
+              className={`${
+                theme === "dark" ? "text-white font-bold" : "font-bold"
+              }`}
+            />
+          ),
+        }}
       />
     </div>
   );

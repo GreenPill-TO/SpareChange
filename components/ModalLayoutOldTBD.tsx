@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { closeModal } from "@/store/modalSlice";
-import SignInModal from "./SignInModal";
+import SignInModal from "./modals/SignInModal";
 
 const constants = {
     MODAL_BODY_TYPES: {

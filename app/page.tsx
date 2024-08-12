@@ -1,28 +1,21 @@
-// app/page.tsx
 "use client";
 import { useEffect, useState } from "react";
-import dynamic from 'next/dynamic'; // Import dynamic from next/dynamic
-import Navbar from "@/components/home/Navbar";
+import { NavbarUnauthenticated } from "@/components/home/Navbar";
+import { NavbarAuthenticated } from "@/components/home/Navbar";
 import Hero from "@/components/home/Hero";
 import Features from "@/components/home/Features";
 import HowItWorks from "@/components/home/HowItWorks";
 import Testimonials from "@/components/home/Testimonials";
 import CallToAction from "@/components/home/CallToAction";
 import Footer from "@/components/home/Footer";
-import Modal from "@/components/home/Modal";
-import CubidStarterFooter from "@/components/home/CubidStarterFooter";
+import ModalLayoutNew from "@/components/modals/ModalLayoutNew";
+import SignInModal from "@/components/modals/SignInModal";
 import { useTheme } from "@/context/ThemeContext";
-import { createClient } from "@supabase/supabase-js";
+import { getSupabaseClient } from "@/utils/supabase/client"; // Use the getSupabaseClient function
 
-// Dynamic import of the Auth component with SSR disabled
-const Auth = dynamic(() => import('@/components/home/Auth'), { ssr: false });
+const supabase = getSupabaseClient(); // Get the Supabase client
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-export default function HomeOrDashboard() {
+export default function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
   const { theme } = useTheme();
@@ -32,7 +25,7 @@ export default function HomeOrDashboard() {
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
     };
-    
+
     checkAuth().catch(console.error);
   }, []);
 
@@ -44,19 +37,32 @@ export default function HomeOrDashboard() {
     setAuthModalOpen(false);
   };
 
+  const handleLogoutClick = async () => {
+    await supabase.auth.signOut();
+    setIsAuthenticated(false);
+    window.location.href = '/';
+  };
+
   return (
     <div className={`w-full min-h-screen ${theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-gray-900"}`}>
-      <Navbar onAuthClick={handleAuthClick} />
-      <Hero onAuthClick={handleAuthClick} />
+      {isAuthenticated ? (
+        <NavbarAuthenticated onLogoutClick={handleLogoutClick} onAuthClick={function (): void {
+          throw new Error("Function not implemented.");
+        } } />
+      ) : (
+        <NavbarUnauthenticated onAuthClick={handleAuthClick} onLogoutClick={function (): void {
+            throw new Error("Function not implemented.");
+          } } />
+      )}
+      <Hero onAuthClick={handleAuthClick} isAuthenticated={isAuthenticated} />
       <Features />
-      <HowItWorks />
+      <HowItWorks onAuthClick={handleAuthClick} isAuthenticated={isAuthenticated} />
       <Testimonials />
-      <CallToAction onAuthClick={handleAuthClick} />
-      <CubidStarterFooter />
+      <CallToAction onAuthClick={handleAuthClick} isAuthenticated={isAuthenticated} />
       <Footer />
-      <Modal isOpen={isAuthModalOpen} onClose={handleCloseModal}>
-        <Auth />
-      </Modal>
+      <ModalLayoutNew isOpen={isAuthModalOpen} onClose={handleCloseModal} size="large">
+        <SignInModal closeModal={handleCloseModal} extraObject={{ isSignIn: true }} />
+      </ModalLayoutNew>
     </div>
   );
 }

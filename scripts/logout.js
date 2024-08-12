@@ -1,10 +1,6 @@
-// scripts/logout.js
-const { createClient } = require('@supabase/supabase-js');
+const { getSupabaseClient } = require('../utils/supabase/client'); // Adjust the path as necessary
 
-// Replace with your actual Supabase URL and Anon Key
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = getSupabaseClient(); // Get the singleton Supabase client instance
 
 async function logout() {
   const { error } = await supabase.auth.signOut();

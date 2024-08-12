@@ -1,4 +1,3 @@
-// components/SignInModal.tsx
 import { useState, useEffect } from "react";
 import { getSupabaseClient } from "@/utils/supabase/client";
 import OTPForm from "./OTPForm";
@@ -67,7 +66,9 @@ function SignInModal({ closeModal, extraObject }) {
 
     if (error) {
       return setErrorMessage("Failed to verify OTP: " + error.message);
-    } else {
+    }
+
+    if (authData?.user) {
       const userId = authData.user.id;
       const userData = await checkIfUserExists(userId);
 
@@ -77,6 +78,8 @@ function SignInModal({ closeModal, extraObject }) {
       } else {
         window.location.href = '/welcome';
       }
+    } else {
+      setErrorMessage("Verification failed: User data is missing.");
     }
   };
 

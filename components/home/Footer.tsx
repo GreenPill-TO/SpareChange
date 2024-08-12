@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTheme } from "@/context/ThemeContext";
-import Modal from "@/components/home/Modal";
+import ModalLayoutNew from "@/components/modals/ModalLayoutNew"; // Adjust the path as necessary
 import MarkdownViewer from "@/components/MarkdownViewer";
 
 function Footer() {
@@ -41,27 +41,19 @@ function Footer() {
             <button onClick={() => handleOpenModal("/TermsAndConditions.md")} className="hover:underline">
               Terms of Service
             </button>
-            <button
-              onClick={() => (window.location.href = "/auth")}
-              className={`px-4 py-2 rounded-lg shadow-md focus:outline-none ${
-                theme === "dark" ? "bg-blue-500 text-white hover:bg-blue-700" : "bg-blue-500 text-white hover:bg-blue-700"
-              }`}
-            >
-              Sign In
-            </button>
           </div>
         </div>
       </div>
 
       {/* Modal for Markdown Files */}
-      <Modal
+      <ModalLayoutNew
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         size={modalSize} // Ensure large size for markdown
         closeBehavior="closeOnOutsideClickAndX" // Allow closing by clicking outside or on the X
       >
         <MarkdownViewer filePath={modalFilePath} theme={theme} />
-      </Modal>
+      </ModalLayoutNew>
     </footer>
   );
 }

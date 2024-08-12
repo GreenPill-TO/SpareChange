@@ -1,13 +1,40 @@
 import { useEffect, useState, useRef } from "react";
 
-const HowItWorks = () => {
+type HowItWorksProps = {
+  onAuthClick: () => void;
+  isAuthenticated: boolean;
+};
+
+const HowItWorks = ({ onAuthClick, isAuthenticated }: HowItWorksProps) => {
   const steps = [
     {
       persona: "Regular User",
       steps: [
-        { heading: "1", content: "Sign up for an account." },
-        { heading: "2", content: "Buy credits using your preferred payment method." },
-        { heading: "3", content: "Donate credits by scanning a panhandler's QR code." },
+        {
+          heading: "1",
+          content: (
+            <>
+              Sign up for an account{" "}
+              {!isAuthenticated && (
+                <span
+                  className="text-blue-500 cursor-pointer underline"
+                  onClick={onAuthClick}
+                >
+                  here
+                </span>
+              )}
+              .
+            </>
+          ),
+        },
+        {
+          heading: "2",
+          content: "Buy credits using your preferred payment method.",
+        },
+        {
+          heading: "3",
+          content: "Donate credits by scanning a panhandler's QR code.",
+        },
         { heading: null, content: null }, // Empty slot
         { heading: null, content: null }, // Empty slot
       ],
@@ -18,8 +45,15 @@ const HowItWorks = () => {
       steps: [
         { heading: null, content: null }, // Empty slot
         { heading: "1", content: "Receive a QR code to accept donations." },
-        { heading: "2", content: "Choose to spend the credits at a store for full value." },
-        { heading: "3", content: "Alternatively, redeem for cash with a 10% fee going to a charity of your choice." },
+        {
+          heading: "2",
+          content: "Choose to spend the credits at a store for full value.",
+        },
+        {
+          heading: "3",
+          content:
+            "Alternatively, redeem for cash with a 10% fee going to a charity of your choice.",
+        },
         { heading: null, content: null }, // Empty slot
       ],
       offsetClass: "ml-1/5", // Offset for the middle row (1/5 of the grid)
@@ -30,20 +64,27 @@ const HowItWorks = () => {
         { heading: null, content: null }, // Empty slot
         { heading: null, content: null }, // Empty slot
         { heading: "1", content: "Sign up to accept credits at full value." },
-        { heading: "2", content: "Allow customers to spend credits in your store." },
-        { heading: "3", content: "Redeem credits for cash with a 3% fee going to a charity of your choice." },
+        {
+          heading: "2",
+          content: "Allow customers to spend credits in your store.",
+        },
+        {
+          heading: "3",
+          content:
+            "Redeem credits for cash with a 3% fee going to a charity of your choice.",
+        },
       ],
       offsetClass: "ml-2/5", // Offset for the last row (2/5 of the grid)
     },
   ];
 
   const [isScrollingHorizontally, setIsScrollingHorizontally] = useState(false);
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null); // Type the ref correctly
 
   useEffect(() => {
     const handleScroll = () => {
       const container = containerRef.current;
-      if (!container) return;
+      if (!container) return; // Ensure containerRef.current is not null
 
       const containerRect = container.getBoundingClientRect();
       const containerWidth = container.scrollWidth;
@@ -51,28 +92,35 @@ const HowItWorks = () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
       // Check if the top of the component reaches the top of the viewport
-      if (!isScrollingHorizontally && containerRect.top <= 0 && containerRect.bottom > screenHeight) {
+      if (
+        !isScrollingHorizontally &&
+        containerRect.top <= 0 &&
+        containerRect.bottom > screenHeight
+      ) {
         setIsScrollingHorizontally(true);
-        document.body.style.overflowY = 'hidden'; // Temporarily disable vertical scroll
+        document.body.style.overflowY = "hidden"; // Temporarily disable vertical scroll
       }
 
       // Handle horizontal scroll
       if (isScrollingHorizontally) {
         const maxScroll = containerWidth - window.innerWidth;
-        const horizontalScrollAmount = Math.min(Math.max(0, scrollTop - container.offsetTop), maxScroll);
+        const horizontalScrollAmount = Math.min(
+          Math.max(0, scrollTop - container.offsetTop),
+          maxScroll
+        );
         container.scrollLeft = horizontalScrollAmount;
 
         // Ensure horizontal scroll is fully completed before allowing vertical scroll to resume
         if (horizontalScrollAmount >= maxScroll) {
           setIsScrollingHorizontally(false);
-          document.body.style.overflowY = 'auto';
+          document.body.style.overflowY = "auto";
         }
       }
 
       // If scrolling back up, re-enable vertical scrolling
       if (isScrollingHorizontally && scrollTop < container.offsetTop) {
         setIsScrollingHorizontally(false);
-        document.body.style.overflowY = 'auto';
+        document.body.style.overflowY = "auto";
       }
     };
 
@@ -105,7 +153,9 @@ const HowItWorks = () => {
                 <div
                   key={stepIndex}
                   className={`${
-                    stepDetail.content ? "bg-white p-6 rounded-lg shadow-lg" : ""
+                    stepDetail.content
+                      ? "bg-white p-6 rounded-lg shadow-lg"
+                      : ""
                   }`}
                 >
                   {stepDetail.content && (

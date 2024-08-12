@@ -1,10 +1,11 @@
 type HeroProps = {
   onAuthClick: () => void;
+  isAuthenticated: boolean; // New prop to determine if the user is authenticated
 };
 
-function Hero({ onAuthClick }: HeroProps) {
+function Hero({ onAuthClick, isAuthenticated }: HeroProps) {
   return (
-    <div className="hero py-12 bg-gradient-to-t from-blue-500 to-purple-700">
+    <div className="hero pt-24 pb-12 bg-gradient-to-t from-blue-500 to-purple-700">
       <div className="hero-content max-w-7xl mx-auto flex-col lg:flex-row-reverse items-center">
         <img
           src="https://plus.unsplash.com/premium_photo-1675116866759-6d198dcf5753?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -19,12 +20,14 @@ function Hero({ onAuthClick }: HeroProps) {
             <p className="text-xl text-white font-bold">
               Join us in making a difference with your spare change.
             </p>
-            <button
-              onClick={onAuthClick}
-              className="ml-8 px-6 py-3 bg-white text-blue-500 font-bold rounded-lg shadow-md hover:bg-blue-100 transition-colors"
-            >
-              Get Started
-            </button>
+            {!isAuthenticated && (
+              <button
+                onClick={onAuthClick}
+                className="ml-8 px-6 py-3 bg-white text-blue-500 font-bold rounded-lg shadow-md hover:bg-blue-100 transition-colors"
+              >
+                Get Started
+              </button>
+            )}
           </div>
           <div className="mt-6 text-l text-white">
             <p>
