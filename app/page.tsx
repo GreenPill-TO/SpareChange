@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { NavbarUnauthenticated } from "@/components/home/Navbar";
-import { NavbarAuthenticated } from "@/components/home/Navbar";
+import { NavbarUnauthenticated } from "@/components/Navbar";
+import { NavbarAuthenticated } from "@/components/Navbar";
 import Hero from "@/components/home/Hero";
 import Features from "@/components/home/Features";
 import HowItWorks from "@/components/home/HowItWorks";
@@ -16,14 +16,20 @@ import { getSupabaseClient } from "@/utils/supabase/client"; // Use the getSupab
 const supabase = getSupabaseClient(); // Get the Supabase client
 
 export default function HomePage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
   const { theme } = useTheme();
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsAuthenticated(!!session);
+      console.log('Checking authentication status...');
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        console.log('Session data:', session);
+        setIsAuthenticated(!!session);
+      } catch (error) {
+        console.error('Error fetching session:', error);
+      }
     };
 
     checkAuth().catch(console.error);
@@ -43,6 +49,11 @@ export default function HomePage() {
     window.location.href = '/';
   };
 
+  // Render nothing while authentication status is being checked
+  if (isAuthenticated === null) {
+    return <div>Loading...</div>; // Optionally show a spinner or placeholder
+  }
+  
   return (
     <div className={`w-full min-h-screen ${theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-gray-900"}`}>
       {isAuthenticated ? (

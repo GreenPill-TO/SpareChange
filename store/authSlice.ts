@@ -27,10 +27,13 @@ export const sendPasscode = createAsyncThunk<
   'auth/sendPasscode',
   async ({ method, contact }, { rejectWithValue }) => {
     const payload = method === 'phone' ? { phone: contact } : { email: contact };
+    console.log('Sending passcode with payload:', payload);
     const { error } = await supabase.auth.signInWithOtp(payload);
     if (error) {
+      console.error('Error in sendPasscode:', error);
       return rejectWithValue(error.message);
     }
+    console.log('Passcode sent successfully to', contact);
     return `Check your ${method} for the passcode!`;
   }
 );
@@ -52,10 +55,14 @@ export const verifyPasscode = createAsyncThunk<
       verificationPayload = { email: contact, token: passcode, type: 'email' };
     }
 
+    console.log('Verifying passcode with payload:', verificationPayload);
+
     const { error } = await supabase.auth.verifyOtp(verificationPayload);
     if (error) {
+      console.error('Error in verifyPasscode:', error);
       return rejectWithValue(error.message);
     }
+    console.log('Passcode verified successfully for', contact);
     return 'Passcode verified successfully!';
   }
 );

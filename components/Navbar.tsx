@@ -18,17 +18,17 @@ const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, 
 };
 
 // Detect and set the system theme on first load
-function useSystemTheme(setTheme) {
+function useSystemTheme(setTheme: (value: string) => void) {
   useEffect(() => {
     const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    setTheme(systemTheme);
+    setTheme(systemTheme);  // Directly passing the string value
   }, [setTheme]);
 }
 
-function ThemeSelector({ theme, setTheme }) {
+function ThemeSelector({ theme, setTheme }: { theme: string; setTheme: (value: string) => void }) {
   const handleThemeChange = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
+    setTheme(newTheme);  // Directly passing the string value
     localStorage.setItem('theme', newTheme); // Save the user's preference
   };
 

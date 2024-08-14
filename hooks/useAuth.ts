@@ -41,7 +41,7 @@ function SignInModal({ closeModal, extraObject }) {
 
   const checkIfUserExists = async (userId) => {
     const { data, error } = await supabase
-      .from('public.users')
+      .from('users')
       .select('*')
       .eq('user_id', userId)
       .single();

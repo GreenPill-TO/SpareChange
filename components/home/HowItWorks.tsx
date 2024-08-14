@@ -63,7 +63,23 @@ const HowItWorks = ({ onAuthClick, isAuthenticated }: HowItWorksProps) => {
       steps: [
         { heading: null, content: null }, // Empty slot
         { heading: null, content: null }, // Empty slot
-        { heading: "1", content: "Sign up to accept credits at full value." },
+        {
+          heading: "1",
+          content: (
+            <>
+              Sign up to accept credits at full value{" "}
+              {!isAuthenticated && (
+                <span
+                  className="text-blue-500 cursor-pointer underline"
+                  onClick={onAuthClick}
+                >
+                  here
+                </span>
+              )}
+              .
+            </>
+          ),
+        },
         {
           heading: "2",
           content: "Allow customers to spend credits in your store.",

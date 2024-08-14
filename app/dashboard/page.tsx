@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { NavbarAuthenticated } from "@/components/home/Navbar";
+import { NavbarAuthenticated } from "@/components/Navbar";
 
 interface User {
   name: string;
