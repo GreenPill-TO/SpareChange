@@ -17,7 +17,9 @@ SpareChange is an innovative tipping app developed for the ETH TO hackathon, des
 - **Supabase**: Utilized as a back-end service for managing user data, authentication, and real-time databases.
 - **Vercel**: Hosts our serverless deployment, ensuring the app is scalable and reliable.
 
-## Getting Started
+This repo was originally cloned from CubidStarter. Below is the original "getting started" chapter from CubidStarter, it applies to this repo too.
+
+## Getting Started with CubidStarter
 
 To set up the project locally, follow these steps:
 
@@ -28,13 +30,7 @@ Make sure you have the following installed on your machine:
 - [Node.js](https://nodejs.org/) (v14 or later)
 - [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
 
-### Installation
-
-This repo was originally cloned from CubidStarter. Below is the original "getting started" chapter from CubidStarter, it applies to this repo too.
-
-## Getting Started with CubidStarter
-
-Follow these steps to set up and start developing your project:
+Then follow these steps to set up and start developing your project:
 
 1. **Fork the Repo**
    - Fork the repository and clone it to your local machine.
