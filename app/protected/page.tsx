@@ -1,12 +1,12 @@
 "use client";
-import { createClient } from "@/utils/supabase/client";
+import { getSupabaseClient } from "@/utils/supabase/client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function ProtectedPage() {
   const { push } = useRouter();
-  const supabase = createClient();
+  const supabase = getSupabaseClient();
   const [uid, setUid] = useState(0);
   const [userCreated, setUserCreated] = useState(false);
   const [email, setEmail] = useState("");
