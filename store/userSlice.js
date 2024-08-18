@@ -46,7 +46,9 @@ const userSlice = createSlice({
     },
     setToken: (state, action) => {
       state.token = action.payload;
-      localStorage.setItem("token", action.payload);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("token", action.payload);
+      }
       axios.defaults.headers.common['Authorization'] = `Bearer ${action.payload}`;
     },
   },

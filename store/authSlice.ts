@@ -67,10 +67,17 @@ export const verifyPasscode = createAsyncThunk<
   }
 );
 
+// Slice with resetAuthState added
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    resetAuthState: (state) => {
+      state.isPasscodeSent = false;
+      state.authMessage = '';
+      state.authError = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(sendPasscode.fulfilled, (state, action: PayloadAction<string>) => {
@@ -95,5 +102,8 @@ const authSlice = createSlice({
 export const selectAuthStatus = (state: RootState) => state.auth.isPasscodeSent;
 export const selectAuthMessage = (state: RootState) => state.auth.authMessage;
 export const selectAuthError = (state: RootState) => state.auth.authError;
+
+// Export the resetAuthState action
+export const { resetAuthState } = authSlice.actions;
 
 export default authSlice.reducer;

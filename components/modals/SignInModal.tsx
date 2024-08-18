@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";  // Use next/navigation instead of next/router
+import { useRouter } from "next/navigation"; // Use next/navigation instead of next/router
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
-import { sendPasscode, verifyPasscode, selectAuthStatus, selectAuthError, selectAuthMessage } from "@/store/authSlice";
+import { sendPasscode, verifyPasscode, resetAuthState } from "@/store/authSlice";
 import OTPForm from "../OTPForm";
 import ImageCarousel from "../ImageCarousel";
 import { useTheme } from "@/context/ThemeContext";
 import { getSupabaseClient } from "@/utils/supabase/client"; // Supabase client
 import { useNotification } from "@/context/NotificationContext"; // Import custom notification context
+import axios from "axios"; // Import axios for API calls
 
 const supabase = getSupabaseClient(); // Initialize Supabase client
 
@@ -50,18 +51,19 @@ function SignInModal({ closeModal, extraObject }: SignInModalProps) {
   const [passcode, setPasscode] = useState('');
   const dispatch: AppDispatch = useDispatch();
   const router = useRouter();
-  const { theme } = useTheme();  // Retrieve the theme using the useTheme hook
-  const { notify } = useNotification();  // Use the notification context
+  const { theme } = useTheme(); // Retrieve the theme using the useTheme hook
+  const { notify } = useNotification(); // Use the notification context
 
   const isPasscodeSent = useSelector((state: RootState) => state.auth.isPasscodeSent);
 
   useEffect(() => {
     // Reset state when the modal opens/closes
+    dispatch(resetAuthState());
     setAuthMethod('phone');
     setCountryCode('+1');
     setContact('');
     setPasscode('');
-  }, [extraObject.isSignIn]);
+  }, [extraObject.isSignIn, dispatch]);
 
   const handleSendPasscode = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -73,7 +75,7 @@ function SignInModal({ closeModal, extraObject }: SignInModalProps) {
       await dispatch(sendPasscode({ method: authMethod, contact: fullContact })).unwrap();
     } catch (err) {
       console.error('Error sending passcode:', err);
-      notify('Failed to send passcode. Please try again.', 'error');  // Show error notification
+      notify('Failed to send passcode. Please try again.', 'error'); // Show error notification
     }
   };
 
@@ -84,12 +86,12 @@ function SignInModal({ closeModal, extraObject }: SignInModalProps) {
     try {
       const result = await dispatch(verifyPasscode({ method: authMethod, contact: fullContact, passcode })).unwrap();
       if (result === 'Passcode verified successfully!') {
-        notify('Passcode verified successfully!', 'success');  // Show success notification
+        notify('Passcode verified successfully!', 'success'); // Show success notification
         await handlePostAuthentication(fullContact);
       }
     } catch (err) {
       console.error('Error verifying passcode:', err);
-      notify('Failed to verify passcode. Please try again.', 'error');  // Show error notification
+      notify('Failed to verify passcode. Please try again.', 'error'); // Show error notification
     }
   };
 
@@ -105,26 +107,46 @@ function SignInModal({ closeModal, extraObject }: SignInModalProps) {
 
     if (error || !user) {
       console.log('No existing user found, attempting to create new user with contact:', fullContact);
+
+      // Call Cubid API to create user and get UUID and newuser status
+      const cubidResponse = await axios.post(
+        "https://passport.cubid.me/api/dapp/create_user",
+        {
+          dapp_id: process.env.NEXT_PUBLIC_CUBID_API_KEY,
+          email: fullContact,
+          stamptype: authMethod === 'email' ? 'email' : 'phone',
+        }
+      );
+
+      const { uuid, newuser } = cubidResponse.data;
+
+      // Insert new user with Cubid data into Supabase
       const { data: newUser, error: insertError } = await supabase
         .from('users')
-        .insert([{ [authMethod === 'phone' ? 'phone' : 'email']: fullContact }])
+        .insert([{ 
+          [authMethod === 'phone' ? 'phone' : 'email']: fullContact,
+          cubid_id: uuid, // Store the Cubid UUID
+          is_new_user: newuser // Store the newuser status
+        }])
         .single();
 
       console.log('New user creation result:', { newUser, insertError });
 
       if (insertError) {
         console.error('Error creating new user:', insertError);
-        notify('Failed to create user. Please try again.', 'error');  // Show error notification
+        notify('Failed to create user. Please try again.', 'error'); // Show error notification
         return;
       }
-      notify('Account created successfully!', 'success');  // Show success notification
+      notify('Account created successfully!', 'success'); // Show success notification
       setTimeout(() => {
         closeModal();
         router.push('/welcome');
       }, 2000); // Auto-close modal after 2 seconds and redirect
     } else {
-      localStorage.setItem('user', JSON.stringify(user));
-      notify('Login successful!', 'success');  // Show success notification
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('user', JSON.stringify(user));
+      }
+      notify('Login successful!', 'success'); // Show success notification
       setTimeout(() => {
         closeModal();
         router.push('/dashboard');
@@ -135,6 +157,7 @@ function SignInModal({ closeModal, extraObject }: SignInModalProps) {
   const handleAuthMethodChange = (method: 'phone' | 'email') => {
     setAuthMethod(method);
     setContact('');
+    dispatch(resetAuthState()); // Reset the auth state when the method changes
   };
 
   return (
@@ -152,9 +175,9 @@ function SignInModal({ closeModal, extraObject }: SignInModalProps) {
             setPasscode={setPasscode}
             onSubmit={isPasscodeSent ? handleVerifyPasscode : handleSendPasscode}
             isOtpSent={isPasscodeSent}
-            errorMessage={null}  // Removed modal-specific error message display
+            errorMessage={null} // Removed modal-specific error message display
             handleAuthMethodChange={handleAuthMethodChange}
-            theme={theme}  // Pass the theme prop here
+            theme={theme} // Pass the theme prop here
           />
         </div>
       </div>

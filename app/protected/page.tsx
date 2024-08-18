@@ -112,7 +112,9 @@ export default function ProtectedPage() {
               <a
                 href={`https://passport.cubid.me/allow?uid=${uid}&colormode=${colorMode}`}
                 onClick={() => {
-                  localStorage.setItem("uid-to-fetch", uid as any);
+                  if (typeof window !== 'undefined') {
+                    localStorage.setItem("uid-to-fetch", uid as any);
+                  }
                 }}
                 className="link link-accent"
               >

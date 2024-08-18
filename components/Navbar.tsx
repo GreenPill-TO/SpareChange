@@ -29,7 +29,9 @@ function ThemeSelector({ theme, setTheme }: { theme: string; setTheme: (value: s
   const handleThemeChange = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);  // Directly passing the string value
-    localStorage.setItem('theme', newTheme); // Save the user's preference
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('theme', newTheme); // Save the user's preference
+    }
   };
 
   return (

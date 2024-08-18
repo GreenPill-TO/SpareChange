@@ -94,58 +94,51 @@ const HowItWorks = ({ onAuthClick, isAuthenticated }: HowItWorksProps) => {
     },
   ];
 
-  const [isScrollingHorizontally, setIsScrollingHorizontally] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null); // Type the ref correctly
+  const [isScrollingDiagonally, setIsScrollingDiagonally] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       const container = containerRef.current;
-      if (!container) return; // Ensure containerRef.current is not null
+      if (!container) return;
 
-      const containerRect = container.getBoundingClientRect();
+      const containerHeight = container.scrollHeight;
       const containerWidth = container.scrollWidth;
-      const screenHeight = window.innerHeight;
+      const viewportHeight = window.innerHeight;
+      const viewportWidth = window.innerWidth;
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-      // Check if the top of the component reaches the top of the viewport
-      if (
-        !isScrollingHorizontally &&
-        containerRect.top <= 0 &&
-        containerRect.bottom > screenHeight
-      ) {
-        setIsScrollingHorizontally(true);
-        document.body.style.overflowY = "hidden"; // Temporarily disable vertical scroll
+      const startScrollPoint = container.offsetTop;
+      const endScrollPoint = container.offsetTop + containerHeight - viewportHeight;
+
+      // Start diagonal scrolling when the top-left corner reaches the viewport's top
+      if (!isScrollingDiagonally && scrollTop >= startScrollPoint) {
+        setIsScrollingDiagonally(true);
       }
 
-      // Handle horizontal scroll
-      if (isScrollingHorizontally) {
-        const maxScroll = containerWidth - window.innerWidth;
-        const horizontalScrollAmount = Math.min(
-          Math.max(0, scrollTop - container.offsetTop),
-          maxScroll
-        );
-        container.scrollLeft = horizontalScrollAmount;
+      if (isScrollingDiagonally) {
+        const maxScrollTop = endScrollPoint - startScrollPoint;
+        const maxScrollLeft = containerWidth - viewportWidth;
 
-        // Ensure horizontal scroll is fully completed before allowing vertical scroll to resume
-        if (horizontalScrollAmount >= maxScroll) {
-          setIsScrollingHorizontally(false);
-          document.body.style.overflowY = "auto";
+        // Calculate how much of the scroll range has been traversed
+        const verticalProgress = Math.min(scrollTop - startScrollPoint, maxScrollTop);
+        const horizontalProgress = (verticalProgress / maxScrollTop) * maxScrollLeft;
+
+        // Move both vertically and horizontally by the same ratio
+        container.scrollLeft = horizontalProgress;
+
+        // If we've reached the end of the horizontal scroll, stop diagonal scrolling
+        if (scrollTop >= endScrollPoint) {
+          setIsScrollingDiagonally(false);
         }
-      }
-
-      // If scrolling back up, re-enable vertical scrolling
-      if (isScrollingHorizontally && scrollTop < container.offsetTop) {
-        setIsScrollingHorizontally(false);
-        document.body.style.overflowY = "auto";
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      document.body.style.overflowY = "auto"; // Ensure vertical scroll is re-enabled on cleanup
     };
-  }, [isScrollingHorizontally]);
+  }, [isScrollingDiagonally]);
 
   return (
     <section
