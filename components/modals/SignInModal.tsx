@@ -9,6 +9,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { getSupabaseClient } from "@/utils/supabase/client"; // Supabase client
 import { useNotification } from "@/context/NotificationContext"; // Import custom notification context
 import axios from "axios"; // Import axios for API calls
+import { isValidUUID } from "@/utils/validators"; // Utility function to validate UUIDs
 
 const supabase = getSupabaseClient(); // Initialize Supabase client
 
@@ -120,6 +121,12 @@ function SignInModal({ closeModal, extraObject }: SignInModalProps) {
 
       const { uuid, newuser } = cubidResponse.data;
 
+      if (!isValidUUID(uuid)) {
+        console.error('Received invalid UUID from Cubid API:', uuid);
+        notify('Failed to create user. Invalid UUID received.', 'error');
+        return;
+      }
+
       // Insert new user with Cubid data into Supabase
       const { data: newUser, error: insertError } = await supabase
         .from('users')
@@ -143,6 +150,8 @@ function SignInModal({ closeModal, extraObject }: SignInModalProps) {
         router.push('/welcome');
       }, 2000); // Auto-close modal after 2 seconds and redirect
     } else {
+      // For returning users, let's update the Cubid data if necessary
+      await updateCubidData(user.cubid_id);
       if (typeof window !== 'undefined') {
         localStorage.setItem('user', JSON.stringify(user));
       }
@@ -151,6 +160,51 @@ function SignInModal({ closeModal, extraObject }: SignInModalProps) {
         closeModal();
         router.push('/dashboard');
       }, 2000); // Auto-close modal after 2 seconds and redirect
+    }
+  };
+
+  const updateCubidData = async (cubidId: string) => {
+    try {
+      const { data: supabaseData, error: supabaseError } = await supabase
+        .from('users')
+        .select('cubid_score, cubid_identity, cubid_score_details')
+        .eq('cubid_id', cubidId)
+        .single();
+
+      if (supabaseError || !supabaseData) {
+        console.error('Error fetching user data from Supabase:', supabaseError);
+        return;
+      }
+
+      const [score, identity, scoreDetails] = await Promise.all([
+        axios.post("https://passport.cubid.me/api/dapp/fetch_score", {
+          apikey: process.env.NEXT_PUBLIC_CUBID_API_KEY,
+          uid: cubidId,
+        }),
+        axios.post("https://passport.cubid.me/api/dapp/get_identity", {
+          apikey: process.env.NEXT_PUBLIC_CUBID_API_KEY,
+          uid: cubidId,
+        }),
+        axios.post("https://passport.cubid.me/api/dapp/get_score_details", {
+          apikey: process.env.NEXT_PUBLIC_CUBID_API_KEY,
+          uid: cubidId,
+        }),
+      ]);
+
+      const updatedFields: Record<string, any> = {};
+      if (score.data !== supabaseData.cubid_score) updatedFields.cubid_score = score.data;
+      if (identity.data !== supabaseData.cubid_identity) updatedFields.cubid_identity = identity.data;
+      if (scoreDetails.data !== supabaseData.cubid_score_details) updatedFields.cubid_score_details = scoreDetails.data;
+
+      if (Object.keys(updatedFields).length > 0) {
+        await supabase
+          .from('users')
+          .update(updatedFields)
+          .eq('cubid_id', cubidId);
+      }
+
+    } catch (err) {
+      console.error('Error updating Cubid data:', err);
     }
   };
 
