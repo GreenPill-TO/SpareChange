@@ -1,67 +1,100 @@
 import React, { useEffect } from 'react';
 import TextField from '@/components/welcome/TextField';
-import CheckBoxGroup from '@/components/welcome/CheckBoxGroup';
-import RadioGroup from '@/components/welcome/RadioGroup';
+import Dropdown from '@/components/welcome/Dropdown';
 import { useTheme } from '@/context/ThemeContext';
 
 interface DonationPreferencesStepProps {
-    preferredDonationAmount: string;
-    selectedCauses: string[];
-    recurringDonation: string;
-    setPreferredDonationAmount: (value: string) => void;
-    setSelectedCauses: (value: string[]) => void;
-    setRecurringDonation: (value: string) => void;
-    handleCheckboxChange: (value: string) => void;
+    preferredDonationAmount: string; // Preferred donation amount in CAD
+    normalTip: number | null; // Normal tip percentage
+    goodTip: number | null; // Good tip percentage for excellent service
+    selectedCause: string; // Selected cause from the dropdown
+    setPreferredDonationAmount: (value: string) => void; // Setter for preferred donation amount
+    setNormalTip: (value: number | null) => void;
+    setGoodTip: (value: number | null) => void;
+    setSelectedCause: (value: string) => void;
     setIsNextEnabled: (enabled: boolean) => void;
     nextStep: () => void;
 }
 
 const DonationPreferencesStep: React.FC<DonationPreferencesStepProps> = ({
     preferredDonationAmount,
-    selectedCauses,
-    recurringDonation,
+    normalTip,
+    goodTip,
+    selectedCause,
     setPreferredDonationAmount,
-    setSelectedCauses,
-    setRecurringDonation,
-    handleCheckboxChange,
+    setNormalTip,
+    setGoodTip,
+    setSelectedCause,
     setIsNextEnabled,
 }) => {
     const { theme } = useTheme();
 
     useEffect(() => {
-        // Enable the "Next" button only if the required fields are filled
+        // Enable the "Next" button only if all fields are filled
         const isComplete =
             preferredDonationAmount.trim() !== '' &&
-            selectedCauses.length > 0 &&
-            recurringDonation.trim() !== '';
+            normalTip !== null &&
+            goodTip !== null &&
+            selectedCause.trim() !== '';
         setIsNextEnabled(isComplete);
-    }, [preferredDonationAmount, selectedCauses, recurringDonation, setIsNextEnabled]);
+    }, [
+        preferredDonationAmount,
+        normalTip,
+        goodTip,
+        selectedCause,
+        setIsNextEnabled,
+    ]);
+
+    const handleNormalTipChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setNormalTip(value ? parseFloat(value) : null);
+    };
+
+    const handleGoodTipChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setGoodTip(value ? parseFloat(value) : null);
+    };
 
     return (
-        <div className={`donation-preferences-step ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-            <h2 className="text-2xl font-bold">Customize Your Donations</h2>
+        <div
+            className={`donation-preferences-step ${
+                theme === 'dark' ? 'text-white' : 'text-gray-900'
+            }`}
+        >
+            <h2 className="text-2xl font-bold mb-4">Customize Your Donation Preferences</h2>
             <TextField
-                label="Preferred Donation Amount"
+                label="Preferred Donation Amount (CAD)"
                 name="preferredDonationAmount"
                 value={preferredDonationAmount}
+                placeholder="$5.00"
                 onChange={(e) => setPreferredDonationAmount(e.target.value)}
             />
-            <CheckBoxGroup
-                label="Causes of Interest"
-                name="causes"
-                options={['Homelessness', 'Hunger', 'Education'].map(cause => ({ label: cause, value: cause }))}
-                selectedValues={selectedCauses}
-                onChange={handleCheckboxChange}
+            <TextField
+                label="Normal Tip Percentage"
+                name="normalTip"
+                value={normalTip !== null ? normalTip.toString() : ''}
+                placeholder="15%"
+                onChange={handleNormalTipChange}
             />
-            <RadioGroup
-                label="Recurring Donations"
-                name="recurringDonation"
+            <TextField
+                label="Good Tip Percentage for Excellent Service"
+                name="goodTip"
+                value={goodTip !== null ? goodTip.toString() : ''}
+                placeholder="25%"
+                onChange={handleGoodTipChange}
+            />
+            <Dropdown
+                label="Select Your Cause"
+                name="selectedCause"
+                value={selectedCause}
+                onChange={(e) => setSelectedCause(e.target.value)}
                 options={[
-                    { label: 'Yes', value: 'yes' },
-                    { label: 'No', value: 'no' }
+                    { label: 'Food Bank', value: 'Food Bank' },
+                    { label: 'Homelessness', value: 'Homelessness' },
+                    { label: 'Clothes', value: 'Clothes' },
+                    { label: 'Counselling', value: 'Counselling' },
+                    { label: 'Child services', value: 'Child services' },
                 ]}
-                selectedValue={recurringDonation}
-                onChange={setRecurringDonation}
             />
         </div>
     );

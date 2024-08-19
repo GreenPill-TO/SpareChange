@@ -11,7 +11,7 @@ import Footer from "@/components/home/Footer";
 import ModalLayoutNew from "@/components/modals/ModalLayoutNew";
 import SignInModal from "@/components/modals/SignInModal";
 import { useTheme } from "@/context/ThemeContext";
-import { getSupabaseClient } from "@/utils/supabase/client"; // Use the getSupabaseClient function
+import { getSupabaseClient } from "@/utils/supabase/client"; // Import the getSupabaseClient function
 
 const supabase = getSupabaseClient(); // Get the Supabase client
 

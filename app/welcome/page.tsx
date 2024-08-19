@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from '@/context/ThemeContext';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import supabase from '@/utils/supabaseClient';
+import { getSupabaseClient } from "@/utils/supabase/client";
 
 // Import all the step components
 import UserInfoStep from '@/components/welcomesteps/UserInfoStep';
@@ -17,6 +17,8 @@ import StoreProfileStep from '@/components/welcomesteps/StoreProfileStep';
 import DonationPreferencesStep from '@/components/welcomesteps/DonationPreferencesStep';
 import AddFundsStep from '@/components/welcomesteps/AddFundsStep';
 import FinalWelcomeStep from '@/components/welcomesteps/FinalWelcomeStep';
+
+const supabase = getSupabaseClient(); // Initialize Supabase client
 
 const stepHeadings = [
     "Introduction",
@@ -35,53 +37,137 @@ const WelcomeFlow: React.FC = () => {
 
     // State for user information
     const [fullName, setFullName] = useState<string>('');
+    const [username, setUserName] = useState<string>('');  
+    const [email, setEmail] = useState<string>('');        
     const [phoneNumber, setPhoneNumber] = useState<string>('');
-    const [username, setUserName] = useState<string>('');
+    const [address, setAddress] = useState<string>('');    
     const [bio, setBio] = useState<string>('');
-    const [preferredDonationAmount, setPreferredDonationAmount] = useState<string>('');
-    const [selectedCauses, setSelectedCauses] = useState<string[]>([]);
-    const [recurringDonation, setRecurringDonation] = useState<string>('');
     const [profileImage, setProfileImage] = useState<File | null>(null);
+    const [preferredDonationAmount, setPreferredDonationAmount] = useState<string>('');
+    const [selectedCause, setSelectedCause] = useState<string>('');
+    const [goodTip, setGoodTip] = useState<number | null>(null);
+    const [normalTip, setNormalTip] = useState<number | null>(null);
 
     const [isNextEnabled, setIsNextEnabled] = useState<boolean>(false);
+
+    // Function to load initial data from Supabase
+    const loadInitialData = async () => {
+        const { data: authData, error: authError } = await supabase.auth.getUser();
+
+        if (authError || !authData?.user) {
+            console.error('Error fetching user data from Supabase:', authError?.message);
+            return;
+        }
+
+        const userId = authData.user.id;
+
+        // Fetch current_step from Supabase
+        const { data: userData, error: userError } = await supabase
+            .from('users')
+            .select('current_step')
+            .eq('auth_user_id', userId)
+            .single();
+
+        if (userError || !userData) {
+            console.error('Error fetching user data from Supabase:', userError?.message);
+            return;
+        }
+
+        const currentStep = userData.current_step;
+
+        // If the user is past step 1, fetch the full user record
+        if (currentStep > 1) {
+            const { data: fullUserData, error: fullUserError } = await supabase
+                .from('users')
+                .select('*')
+                .eq('auth_user_id', userId)
+                .single();
+
+            if (fullUserError || !fullUserData) {
+                console.error('Error fetching full user data from Supabase:', fullUserError?.message);
+                return;
+            }
+
+            // Prepopulate the state with the fetched data
+            setStep(currentStep);
+            setFullName(fullUserData.full_name || '');
+            setUserName(fullUserData.username || '');
+            setEmail(fullUserData.email || '');
+            setPhoneNumber(fullUserData.phone || '');
+            setAddress(fullUserData.address || '');
+            setBio(fullUserData.bio || '');
+            setProfileImage(fullUserData.profile_image_url ? new File([], fullUserData.profile_image_url) : null);
+            setPreferredDonationAmount(fullUserData.preferred_donation_amount ? fullUserData.preferred_donation_amount.toString() : '');
+            setSelectedCause(fullUserData.selected_cause || '');
+            setGoodTip(fullUserData.good_tip);
+            setNormalTip(fullUserData.default_tip);
+            setPersona(fullUserData.persona || null);
+        } else {
+            setStep(currentStep);
+        }
+    };
+
+    useEffect(() => {
+        loadInitialData(); // Load data on component mount
+    }, []);
 
     const saveToLocalStorage = () => {
         const data = {
             step,
-            fullName,
-            phoneNumber,
-            username,
-            bio,
-            preferredDonationAmount,
-            selectedCauses,
-            recurringDonation,
-            profileImage,
+            fullName: fullName || null,
+            username: username || null,
+            email: email || null,
+            phoneNumber: phoneNumber || null,
+            address: address || null,
+            bio: bio || null,
+            profileImage: profileImage || null,
+            preferredDonationAmount: preferredDonationAmount !== '' ? parseFloat(preferredDonationAmount) : null,
+            selectedCause: selectedCause || null,
+            goodTip: goodTip !== null ? goodTip : null,
+            normalTip: normalTip !== null ? normalTip : null,
             persona,
         };
         localStorage.setItem('welcomeFlowData', JSON.stringify(data));
     };
 
     const syncToSupabase = async () => {
-        const data = {
-            step,
-            full_name: fullName,
-            phone: phoneNumber,
-            username,
-            bio,
-            preferred_donation_amount: preferredDonationAmount,
-            selected_cause: selectedCauses,
-            profile_image_url: profileImage ? URL.createObjectURL(profileImage) : null,
-            persona,
-        };
+        const { data, error: userError } = await supabase.auth.getUser();
 
-        // Save to Supabase (modify this to match your Supabase setup)
-        const { error } = await supabase
-            .from('users')
-            .update(data)
-            .eq('auth_user_id', supabase.auth.user()?.id);
+        if (userError || !data?.user) {
+            console.error('Error fetching user data from Supabase:', userError?.message);
+            return;
+        }
 
-        if (error) {
-            console.error('Error syncing data to Supabase:', error.message);
+        const userId = data.user.id;
+
+        const userDataUpdate: { [key: string]: any } = {};
+
+        if (step !== null) userDataUpdate.current_step = step;
+        if (fullName) userDataUpdate.full_name = fullName;
+        if (username) userDataUpdate.username = username;
+        if (email) userDataUpdate.email = email;
+        if (phoneNumber) userDataUpdate.phone = phoneNumber;
+        if (address) userDataUpdate.address = address;
+        if (bio) userDataUpdate.bio = bio;
+        if (profileImage) {
+            const profileImageUrl = URL.createObjectURL(profileImage);
+            if (profileImageUrl !== userData.profile_image_url) userDataUpdate.profile_image_url = profileImageUrl;
+        }
+        if (preferredDonationAmount !== '') userDataUpdate.preferred_donation_amount = parseFloat(preferredDonationAmount);
+        if (selectedCause) userDataUpdate.selected_cause = selectedCause;
+        if (goodTip !== null) userDataUpdate.good_tip = goodTip;
+        if (normalTip !== null) userDataUpdate.default_tip = normalTip;
+        if (persona) userDataUpdate.persona = persona;
+
+        if (Object.keys(userDataUpdate).length > 0) {
+            const { error } = await supabase
+                .from('users')
+                .update(userDataUpdate)
+                .eq('auth_user_id', userId);
+
+            if (error) {
+                console.error('Error syncing user data to Supabase:', error.message);
+            }
         }
     };
 
@@ -131,11 +217,13 @@ const WelcomeFlow: React.FC = () => {
                             {step === 2 && (
                                 <UserInfoStep
                                     fullName={fullName}
+                                    username={username}            
+                                    email={email}                  
                                     phoneNumber={phoneNumber}
-                                    username={username}
                                     setFullName={setFullName}
+                                    setUserName={setUserName}      
+                                    setEmail={setEmail}            
                                     setPhoneNumber={setPhoneNumber}
-                                    setUserName={setUserName}
                                     setIsNextEnabled={setIsNextEnabled}
                                 />
                             )}
@@ -151,10 +239,10 @@ const WelcomeFlow: React.FC = () => {
                                     {(persona === 'support-seeker' || persona === 'service-worker') && (
                                         <PublicProfileCreationStep
                                             bio={bio}
-                                            username={username}
+                                            address={address}
                                             profileImage={profileImage}
                                             setBio={setBio}
-                                            setAddress={setUserName}
+                                            setAddress={setAddress}
                                             handleImageUpload={setProfileImage}
                                             setIsNextEnabled={setIsNextEnabled}
                                             nextStep={nextStep}
@@ -169,12 +257,13 @@ const WelcomeFlow: React.FC = () => {
                                     {persona === 'donor' && (
                                         <DonationPreferencesStep
                                             preferredDonationAmount={preferredDonationAmount}
-                                            selectedCauses={selectedCauses}
-                                            recurringDonation={recurringDonation}
+                                            selectedCause={selectedCause}
+                                            goodTip={goodTip}
+                                            normalTip={normalTip}
                                             setPreferredDonationAmount={setPreferredDonationAmount}
-                                            setSelectedCauses={setSelectedCauses}
-                                            setRecurringDonation={setRecurringDonation}
-                                            handleCheckboxChange={() => {}}
+                                            setSelectedCause={setSelectedCause}
+                                            setGoodTip={setGoodTip}
+                                            setNormalTip={setNormalTip}
                                             setIsNextEnabled={setIsNextEnabled}
                                             nextStep={nextStep}
                                         />
@@ -193,18 +282,18 @@ const WelcomeFlow: React.FC = () => {
                                         <StoreProfileStep
                                             fullName={fullName}
                                             phoneNumber={phoneNumber}
-                                            username={username}
+                                            address={address}
                                             setFullName={setFullName}
                                             setPhoneNumber={setPhoneNumber}
-                                            setAddress={setUserName}
+                                            setAddress={setAddress}
                                             nextStep={nextStep}
                                             setIsNextEnabled={setIsNextEnabled}
                                         />
                                     )}
                                     {persona === 'donor' && (
                                         <AddFundsStep
-                                            preferredDonationAmount={preferredDonationAmount}
-                                            setPreferredDonationAmount={setPreferredDonationAmount}
+                                            preferredDonationAmount={preferredDonationAmount} 
+                                            setPreferredDonationAmount={setPreferredDonationAmount} 
                                             handleSubmitPayment={() => {}}
                                             nextStep={nextStep}
                                             setIsNextEnabled={setIsNextEnabled}
