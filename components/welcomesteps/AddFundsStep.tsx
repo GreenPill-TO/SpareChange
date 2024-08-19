@@ -1,22 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AmountField from '@/components/welcome/AmountField';
 import PaymentForm from '@/components/welcome/PaymentForm';
-import Button from '@/components/welcome/Button';
-import { useTheme } from '@/context/ThemeContext';
 
 interface AddFundsStepProps {
     preferredDonationAmount: string;
     setPreferredDonationAmount: (value: string) => void;
     handleSubmitPayment: (paymentData: { cardNumber: string; expiryDate: string; cvv: string }) => void;
+    setIsNextEnabled: (enabled: boolean) => void;
+    nextStep: () => void;
 }
 
 const AddFundsStep: React.FC<AddFundsStepProps> = ({
-    preferredDonationAmount, setPreferredDonationAmount, handleSubmitPayment
+    preferredDonationAmount,
+    setPreferredDonationAmount,
+    handleSubmitPayment,
+    setIsNextEnabled
 }) => {
-    const { theme } = useTheme();
+    useEffect(() => {
+        // Enable the "Next" button if the preferredDonationAmount is not empty
+        const isComplete = preferredDonationAmount.trim() !== '';
+        setIsNextEnabled(isComplete);
+    }, [preferredDonationAmount, setIsNextEnabled]);
 
     return (
-        <div className={`add-funds-step ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
+        <div className="add-funds-step">
             <h2 className="text-2xl font-bold">Fund Your Account</h2>
             <AmountField
                 label="Amount to Add"

@@ -14,13 +14,27 @@ interface User {
   cubid_id: string;
 }
 
+interface Change {
+  old: string;
+  new: string;
+}
+
+interface ScoreChangeModalProps {
+  changes: {
+    cubid_score?: Change;
+    cubid_identity?: Change;
+    cubid_score_details?: Change;
+  };
+  onAccept: () => void;
+}
+
 export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ totalDonations: 0, totalCredits: 0 });
   const [recentActivity, setRecentActivity] = useState<string[]>([]);
   const [showScoreChangeModal, setShowScoreChangeModal] = useState(false);
-  const [changes, setChanges] = useState<Partial<CubidAPIResponse>>({});
+  const [changes, setChanges] = useState<ScoreChangeModalProps['changes']>({});
   const router = useRouter();
   const { apiData, fetchCubidData } = useCubidAPI();
   const cubidDataFetched = useRef(false);
@@ -73,15 +87,15 @@ export default function Dashboard() {
 
         cubidDataFetched.current = true;
       } else {
-        const changes: Partial<CubidAPIResponse> = {};
+        const changes: ScoreChangeModalProps['changes'] = {};
         if (apiData.score !== supabaseData.cubid_score) {
-          changes.score = { old: supabaseData.cubid_score, new: apiData.score };
+          changes.cubid_score = { old: supabaseData.cubid_score, new: apiData.score };
         }
         if (apiData.identity !== supabaseData.cubid_identity) {
-          changes.identity = { old: supabaseData.cubid_identity, new: apiData.identity };
+          changes.cubid_identity = { old: supabaseData.cubid_identity, new: apiData.identity };
         }
         if (apiData.scoreDetails !== supabaseData.cubid_score_details) {
-          changes.scoreDetails = { old: supabaseData.cubid_score_details, new: apiData.scoreDetails };
+          changes.cubid_score_details = { old: supabaseData.cubid_score_details, new: apiData.scoreDetails };
         }
 
         if (Object.keys(changes).length > 0) {

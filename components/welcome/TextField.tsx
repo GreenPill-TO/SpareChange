@@ -24,8 +24,8 @@ const TextField: React.FC<TextFieldProps> = ({
 }) => {
     const { theme } = useTheme();
 
-    const inputClasses = `mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 ${
-        theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
+    const inputClasses = `mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 ${
+        theme === 'dark' ? 'bg-gray-700 text-white border-gray-600' : 'bg-white text-gray-900 border-gray-300'
     }`;
 
     return (
@@ -43,6 +43,7 @@ const TextField: React.FC<TextFieldProps> = ({
                 required={required}
                 disabled={disabled}
                 className={inputClasses}
+                style={{ borderWidth: '1px' }}
             />
         </div>
     );

@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import TextField from '@/components/welcome/TextField';
 import Dropdown from '@/components/welcome/Dropdown';
 import AddressField from '@/components/welcome/AddressField';
-import Button from '@/components/welcome/Button';
 import { useTheme } from '@/context/ThemeContext';
 
 interface StoreProfileStepProps {
@@ -12,16 +11,29 @@ interface StoreProfileStepProps {
     setFullName: (value: string) => void;
     setPhoneNumber: (value: string) => void;
     setAddress: (value: string) => void;
+    setIsNextEnabled: (isEnabled: boolean) => void;
     nextStep: () => void;
 }
 
 const StoreProfileStep: React.FC<StoreProfileStepProps> = ({
-    fullName, phoneNumber, address, setFullName, setPhoneNumber, setAddress, nextStep
+    fullName,
+    phoneNumber,
+    address,
+    setFullName,
+    setPhoneNumber,
+    setAddress,
+    setIsNextEnabled,
 }) => {
     const { theme } = useTheme();
 
+    useEffect(() => {
+        // Enable the Continue button only if the required fields are filled out
+        const isComplete = fullName.trim() !== '' && phoneNumber.trim() !== '';
+        setIsNextEnabled(isComplete);
+    }, [fullName, phoneNumber, setIsNextEnabled]);
+
     return (
-        <div className={`store-profile-step ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
+        <div className={`store-profile-step ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} p-6 space-y-6`}>
             <h2 className="text-2xl font-bold">Profile Your Store</h2>
             <TextField
                 label="Store Name"
@@ -55,10 +67,9 @@ const StoreProfileStep: React.FC<StoreProfileStepProps> = ({
             <TextField
                 label="Max Tip/Donation Percentage"
                 name="maxTip"
-                value={fullName}  // Replace with the appropriate state
+                value={fullName}  // Replace with the appropriate state if this is a mistake
                 onChange={(e) => setFullName(e.target.value)}
             />
-            <Button label="Save Store Profile" onClick={nextStep} />
         </div>
     );
 };

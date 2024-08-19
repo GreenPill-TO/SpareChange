@@ -100,7 +100,7 @@ function SignInModal({ closeModal, extraObject }: SignInModalProps) {
     console.log('Attempting to fetch user with contact:', fullContact);
     const { data: user, error } = await supabase
       .from('users')
-      .select('*')
+      .select('cubid_id, has_completed_intro')
       .eq(authMethod === 'phone' ? 'phone' : 'email', fullContact)
       .single();
 
@@ -133,7 +133,7 @@ function SignInModal({ closeModal, extraObject }: SignInModalProps) {
         .insert([{ 
           [authMethod === 'phone' ? 'phone' : 'email']: fullContact,
           cubid_id: uuid, // Store the Cubid UUID
-          is_new_user: newuser // Store the newuser status
+          has_completed_intro: false // Set as a new user
         }])
         .single();
 
@@ -150,16 +150,25 @@ function SignInModal({ closeModal, extraObject }: SignInModalProps) {
         router.push('/welcome');
       }, 2000); // Auto-close modal after 2 seconds and redirect
     } else {
-      // For returning users, let's update the Cubid data if necessary
-      await updateCubidData(user.cubid_id);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('user', JSON.stringify(user));
+      if (user.has_completed_intro) {
+        // Returning user, proceed to the dashboard
+        await updateCubidData(user.cubid_id);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('user', JSON.stringify(user));
+        }
+        notify('Login successful!', 'success'); // Show success notification
+        setTimeout(() => {
+          closeModal();
+          router.push('/dashboard');
+        }, 2000); // Auto-close modal after 2 seconds and redirect
+      } else {
+        // New user, redirect to the welcome screen
+        notify('Welcome! Completing your intro...', 'success');
+        setTimeout(() => {
+          closeModal();
+          router.push('/welcome');
+        }, 2000); // Auto-close modal after 2 seconds and redirect
       }
-      notify('Login successful!', 'success'); // Show success notification
-      setTimeout(() => {
-        closeModal();
-        router.push('/dashboard');
-      }, 2000); // Auto-close modal after 2 seconds and redirect
     }
   };
 

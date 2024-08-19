@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // Use next/navigation for routing
-import { NavbarUnauthenticated } from "@/components/Navbar";
+import { useRouter } from "next/navigation";
 import { useTheme } from '@/context/ThemeContext';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import supabase from '@/utils/supabaseClient';
 
 // Import all the step components
 import UserInfoStep from '@/components/welcomesteps/UserInfoStep';
@@ -19,15 +19,11 @@ import AddFundsStep from '@/components/welcomesteps/AddFundsStep';
 import FinalWelcomeStep from '@/components/welcomesteps/FinalWelcomeStep';
 
 const stepHeadings = [
-    "Welcome to Our App!",
     "Introduction",
+    "Complete Your Profile",
     "Choose Your Persona",
-    "Create Your Public Profile",
-    "Set Up Donations",
-    "Set Up Store Payments",
-    "Create Store Profile",
-    "Set Donation Preferences",
-    "Add Funds",
+    "Additional Details",
+    "Finalize Setup",
     "You're All Set!"
 ];
 
@@ -37,55 +33,88 @@ const WelcomeFlow: React.FC = () => {
     const [persona, setPersona] = useState<string | null>(null);
     const { theme } = useTheme();
 
+    // State for user information
     const [fullName, setFullName] = useState<string>('');
     const [phoneNumber, setPhoneNumber] = useState<string>('');
-    const [address, setAddress] = useState<string>('');
+    const [username, setUserName] = useState<string>('');
     const [bio, setBio] = useState<string>('');
-    const [profileImage, setProfileImage] = useState<File | null>(null);
     const [preferredDonationAmount, setPreferredDonationAmount] = useState<string>('');
     const [selectedCauses, setSelectedCauses] = useState<string[]>([]);
     const [recurringDonation, setRecurringDonation] = useState<string>('');
+    const [profileImage, setProfileImage] = useState<File | null>(null);
 
-    const nextStep = () => setStep(step + 1);
+    const [isNextEnabled, setIsNextEnabled] = useState<boolean>(false);
+
+    const saveToLocalStorage = () => {
+        const data = {
+            step,
+            fullName,
+            phoneNumber,
+            username,
+            bio,
+            preferredDonationAmount,
+            selectedCauses,
+            recurringDonation,
+            profileImage,
+            persona,
+        };
+        localStorage.setItem('welcomeFlowData', JSON.stringify(data));
+    };
+
+    const syncToSupabase = async () => {
+        const data = {
+            step,
+            full_name: fullName,
+            phone: phoneNumber,
+            username,
+            bio,
+            preferred_donation_amount: preferredDonationAmount,
+            selected_cause: selectedCauses,
+            profile_image_url: profileImage ? URL.createObjectURL(profileImage) : null,
+            persona,
+        };
+
+        // Save to Supabase (modify this to match your Supabase setup)
+        const { error } = await supabase
+            .from('users')
+            .update(data)
+            .eq('auth_user_id', supabase.auth.user()?.id);
+
+        if (error) {
+            console.error('Error syncing data to Supabase:', error.message);
+        }
+    };
+
+    const nextStep = () => {
+        saveToLocalStorage();
+        syncToSupabase();
+        setStep(step + 1);
+    };
+
     const previousStep = () => setStep(step - 1);
 
     const handlePersonaSelection = (selectedPersona: string) => {
         setPersona(selectedPersona);
-        if (selectedPersona === 'panhandler' || selectedPersona === 'waitress') {
-            setStep(4);
-        } else if (selectedPersona === 'store') {
-            setStep(6);
-        } else if (selectedPersona === 'donor') {
-            setStep(8);
+        setIsNextEnabled(true); // Enable the Continue button after persona selection
+    };
+
+    useEffect(() => {
+        if (step === 1) {
+            setIsNextEnabled(true); // Always enable Next button on the first step
         }
-    };
-
-    const handleImageUpload = (file: File | null) => {
-        setProfileImage(file);
-    };
-
-    const handleCheckboxChange = (value: string) => {
-        setSelectedCauses((prev) =>
-            prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-        );
-    };
-
-    const handleSubmitPayment = (paymentData: { cardNumber: string; expiryDate: string; cvv: string }) => {
-        console.log('Payment data submitted:', paymentData);
-        nextStep();
-    };
+    }, [step]);
 
     return (
         <div
             className={`welcome-flow-container min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-magenta-500 to-indigo-500 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}
         >
-            <div className="w-full max-w-4xl p-6 bg-white rounded-lg shadow-lg">
+            <div className={`w-full max-w-4xl p-6 rounded-lg shadow-lg ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
                 {/* Carousel for Progress */}
                 <div className="flex justify-center mb-4">
-                    {Array.from({ length: 10 }).map((_, index) => (
+                    {Array.from({ length: 6 }).map((_, index) => (
                         <div
                             key={index}
-                            className={`w-2 h-2 rounded-full mx-1 ${index + 1 === step ? 'bg-indigo-600' : 'bg-gray-300'}`}
+                            className={`w-2 h-2 rounded-full mx-1 ${index + 1 === step ? 'bg-indigo-600' : theme === 'dark' ? 'bg-gray-600' : 'bg-gray-300'}`}
                         ></div>
                     ))}
                 </div>
@@ -98,73 +127,99 @@ const WelcomeFlow: React.FC = () => {
                 <TransitionGroup>
                     <CSSTransition key={step} classNames="slide" timeout={300}>
                         <div className="step-content">
-                            {step === 1 && (
+                            {step === 1 && <OnboardingIntroStep nextStep={nextStep} />}
+                            {step === 2 && (
                                 <UserInfoStep
                                     fullName={fullName}
                                     phoneNumber={phoneNumber}
-                                    address={address}
+                                    username={username}
                                     setFullName={setFullName}
                                     setPhoneNumber={setPhoneNumber}
-                                    setAddress={setAddress}
-                                    nextStep={nextStep}
+                                    setUserName={setUserName}
+                                    setIsNextEnabled={setIsNextEnabled}
                                 />
                             )}
-                            {step === 2 && <OnboardingIntroStep nextStep={nextStep} />}
                             {step === 3 && (
                                 <PersonaSelectionStep
                                     persona={persona}
                                     handlePersonaSelection={handlePersonaSelection}
+                                    setIsNextEnabled={setIsNextEnabled}
                                 />
                             )}
-                            {step === 4 && (persona === 'panhandler' || persona === 'waitress') && (
-                                <PublicProfileCreationStep
-                                    bio={bio}
-                                    address={address}
-                                    profileImage={profileImage}
-                                    setBio={setBio}
-                                    setAddress={setAddress}
-                                    handleImageUpload={handleImageUpload}
-                                    nextStep={nextStep}
+                            {step === 4 && persona && (
+                                <>
+                                    {(persona === 'support-seeker' || persona === 'service-worker') && (
+                                        <PublicProfileCreationStep
+                                            bio={bio}
+                                            username={username}
+                                            profileImage={profileImage}
+                                            setBio={setBio}
+                                            setAddress={setUserName}
+                                            handleImageUpload={setProfileImage}
+                                            setIsNextEnabled={setIsNextEnabled}
+                                            nextStep={nextStep}
+                                        />
+                                    )}
+                                    {persona === 'store' && (
+                                        <StorePaymentsStep 
+                                          nextStep={nextStep} 
+                                          setIsNextEnabled={setIsNextEnabled} 
+                                        />
+                                    )}
+                                    {persona === 'donor' && (
+                                        <DonationPreferencesStep
+                                            preferredDonationAmount={preferredDonationAmount}
+                                            selectedCauses={selectedCauses}
+                                            recurringDonation={recurringDonation}
+                                            setPreferredDonationAmount={setPreferredDonationAmount}
+                                            setSelectedCauses={setSelectedCauses}
+                                            setRecurringDonation={setRecurringDonation}
+                                            handleCheckboxChange={() => {}}
+                                            setIsNextEnabled={setIsNextEnabled}
+                                            nextStep={nextStep}
+                                        />
+                                    )}
+                                </>
+                            )}
+                            {step === 5 && persona && (
+                                <>
+                                    {(persona === 'support-seeker' || persona === 'service-worker') && (
+                                        <ReceiveDonationsStep 
+                                          nextStep={nextStep}
+                                          setIsNextEnabled={setIsNextEnabled}
+                                        />
+                                    )}
+                                    {persona === 'store' && (
+                                        <StoreProfileStep
+                                            fullName={fullName}
+                                            phoneNumber={phoneNumber}
+                                            username={username}
+                                            setFullName={setFullName}
+                                            setPhoneNumber={setPhoneNumber}
+                                            setAddress={setUserName}
+                                            nextStep={nextStep}
+                                            setIsNextEnabled={setIsNextEnabled}
+                                        />
+                                    )}
+                                    {persona === 'donor' && (
+                                        <AddFundsStep
+                                            preferredDonationAmount={preferredDonationAmount}
+                                            setPreferredDonationAmount={setPreferredDonationAmount}
+                                            handleSubmitPayment={() => {}}
+                                            nextStep={nextStep}
+                                            setIsNextEnabled={setIsNextEnabled}
+                                        />
+                                    )}
+                                </>
+                            )}
+                            {step === 6 && (
+                                <FinalWelcomeStep 
+                                    onDashboardRedirect={() => {
+                                        saveToLocalStorage();
+                                        syncToSupabase();
+                                        router.push('/dashboard');
+                                    }} 
                                 />
-                            )}
-                            {step === 5 && (persona === 'panhandler' || persona === 'waitress') && (
-                                <ReceiveDonationsStep nextStep={nextStep} />
-                            )}
-                            {step === 6 && persona === 'store' && (
-                                <StorePaymentsStep nextStep={nextStep} />
-                            )}
-                            {step === 7 && persona === 'store' && (
-                                <StoreProfileStep
-                                    fullName={fullName}
-                                    phoneNumber={phoneNumber}
-                                    address={address}
-                                    setFullName={setFullName}
-                                    setPhoneNumber={setPhoneNumber}
-                                    setAddress={setAddress}
-                                    nextStep={nextStep}
-                                />
-                            )}
-                            {step === 8 && persona === 'donor' && (
-                                <DonationPreferencesStep
-                                    preferredDonationAmount={preferredDonationAmount}
-                                    selectedCauses={selectedCauses}
-                                    recurringDonation={recurringDonation}
-                                    setPreferredDonationAmount={setPreferredDonationAmount}
-                                    setSelectedCauses={setSelectedCauses}
-                                    setRecurringDonation={setRecurringDonation}
-                                    handleCheckboxChange={handleCheckboxChange}
-                                    nextStep={nextStep}
-                                />
-                            )}
-                            {step === 9 && persona === 'donor' && (
-                                <AddFundsStep
-                                    preferredDonationAmount={preferredDonationAmount}
-                                    setPreferredDonationAmount={setPreferredDonationAmount}
-                                    handleSubmitPayment={handleSubmitPayment}
-                                />
-                            )}
-                            {step === 10 && (
-                                <FinalWelcomeStep onDashboardRedirect={() => router.push('/dashboard')} />
                             )}
                         </div>
                     </CSSTransition>
@@ -172,14 +227,19 @@ const WelcomeFlow: React.FC = () => {
 
                 {/* Navigation Buttons */}
                 <div className="flex justify-between mt-6">
-                    {step > 1 && (
+                    {step > 1 && step < 6 && (
                         <button onClick={previousStep} className="text-indigo-600">
                             Back
                         </button>
                     )}
-                    {step < 10 && (
-                        <button onClick={nextStep} className="text-indigo-600">
-                            Next
+                    {step < 6 && (
+                        <button
+                            onClick={nextStep}
+                            className={`text-indigo-600 ${!isNextEnabled && 'opacity-50 cursor-not-allowed'}`}
+                            disabled={!isNextEnabled}
+                            style={{ marginLeft: 'auto' }}
+                        >
+                            Continue
                         </button>
                     )}
                 </div>

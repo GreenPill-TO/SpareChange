@@ -1,9 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ImageUpload from '@/components/welcome/ImageUpload';
 import TextArea from '@/components/welcome/TextArea';
 import AddressField from '@/components/welcome/AddressField';
-import Button from '@/components/welcome/Button';
-import { useTheme } from '@/context/ThemeContext';
 
 interface PublicProfileCreationStepProps {
     bio: string;
@@ -12,16 +10,27 @@ interface PublicProfileCreationStepProps {
     setBio: (value: string) => void;
     setAddress: (value: string) => void;
     handleImageUpload: (file: File | null) => void;
+    setIsNextEnabled: (enabled: boolean) => void;
     nextStep: () => void;
 }
 
 const PublicProfileCreationStep: React.FC<PublicProfileCreationStepProps> = ({
-    bio, address, profileImage, setBio, setAddress, handleImageUpload, nextStep
+    bio,
+    address,
+    profileImage,
+    setBio,
+    setAddress,
+    handleImageUpload,
+    setIsNextEnabled,
 }) => {
-    const { theme } = useTheme();
+    useEffect(() => {
+        // Enable the "Next" button if both bio and profile image are present
+        const isComplete = bio.trim() !== '' && profileImage !== null;
+        setIsNextEnabled(isComplete);
+    }, [bio, profileImage, setIsNextEnabled]);
 
     return (
-        <div className={`public-profile-creation-step ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
+        <div className="public-profile-creation-step">
             <h2 className="text-2xl font-bold">Create Your Public Profile</h2>
             <ImageUpload
                 label="Profile Picture"
@@ -40,7 +49,6 @@ const PublicProfileCreationStep: React.FC<PublicProfileCreationStepProps> = ({
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
             />
-            <Button label="Save Profile" onClick={nextStep} />
         </div>
     );
 };
