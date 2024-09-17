@@ -151,7 +151,7 @@ const WelcomeFlow: React.FC = () => {
         if (bio) userDataUpdate.bio = bio;
         if (profileImage) {
             const profileImageUrl = URL.createObjectURL(profileImage);
-            if (profileImageUrl !== userData.profile_image_url) userDataUpdate.profile_image_url = profileImageUrl;
+            if (profileImageUrl !== data.user.user_metadata.profile_image_url) userDataUpdate.profile_image_url = profileImageUrl;
         }
         if (preferredDonationAmount !== '') userDataUpdate.preferred_donation_amount = parseFloat(preferredDonationAmount);
         if (selectedCause) userDataUpdate.selected_cause = selectedCause;
