@@ -44,11 +44,14 @@ function NavProfileLinks() {
   };
 
   const logoutUser = async () => {
+    // Optional: Make the logout request to the backend
     // await axios.get(process.env.NEXT_PUBLIC_BASE_URL+'/user/logout')
-    localStorage.clear();
-    window.location = "/";
+    if (typeof window !== 'undefined') {
+      localStorage.clear();
+      window.location.href = "/";
+    }
   };
-
+  
   const handleDropDownClick = () => {
     const elem = document.activeElement;
     if (elem) {
