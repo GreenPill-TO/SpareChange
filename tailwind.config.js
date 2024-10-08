@@ -14,7 +14,14 @@ module.exports = {
           "background-hover": "hsl(var(--btn-background-hover))",
         },
       },
+      margin: {
+        '1/5': '20%',
+        '2/5': '40%',
+      },
     },
   },
-  plugins: [require("daisyui")],
+  plugins: [
+    require("daisyui"),
+    require('@tailwindcss/typography'),
+  ],
 };
