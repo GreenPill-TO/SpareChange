@@ -1,5 +1,6 @@
+import { useAuth } from "@TCoin/api/hooks/useAuth";
 import TextField from "@TCoin/components/form/form-fields/TextField";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 
 interface UserInfoStepProps {
   fullName: string;
@@ -24,29 +25,40 @@ const UserInfoStep: React.FC<UserInfoStepProps> = ({
   setEmail,
   setIsNextEnabled,
 }) => {
-  const [authMethod, setAuthMethod] = useState<"email" | "phone" | null>(null);
+  const { userData, authData } = useAuth();
+
+  const authMethod = useMemo(() => {
+    return authData?.user?.app_metadata?.provider;
+  }, [authData]);
 
   useEffect(() => {
     // Determine if user authenticated with email or phone
-    const storedEmail = localStorage.getItem("auth_email");
-    const storedPhone = localStorage.getItem("auth_phone");
 
-    if (storedEmail) {
-      setAuthMethod("email");
-      setEmail(storedEmail);
-    } else if (storedPhone) {
-      setAuthMethod("phone");
-      setPhoneNumber(storedPhone);
+    if (authMethod === "email") {
+      setEmail(authData?.user?.email || "");
+    } else if (authMethod === "phone") {
+      setPhoneNumber(authData?.user?.phone || "");
     }
+  }, [authMethod, authData?.user]);
 
+  useEffect(() => {
+    if (userData?.cubidData?.full_name) {
+      setFullName(userData?.cubidData?.full_name);
+    }
+    if (userData?.cubidData?.username) {
+      setUserName(userData?.cubidData?.full_name);
+    }
+  }, [userData?.cubidData]);
+
+  useEffect(() => {
     // Enable the "Next" button only if fullName and either phoneNumber or email are not empty
     const isComplete =
       fullName.trim() !== "" &&
       username.trim() !== "" &&
-      ((authMethod === "email" && phoneNumber.trim() !== "") || (authMethod === "phone" && email.trim() !== ""));
-    setIsNextEnabled(isComplete);
-  }, [fullName, username, phoneNumber, email, setIsNextEnabled, authMethod]);
+      ((authMethod === "email" && email.trim() !== "") || (authMethod === "phone" && phoneNumber.trim() !== ""));
 
+    setIsNextEnabled(isComplete);
+  }, [authMethod, email, phoneNumber, fullName, username]);
   const handleFullNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFullName(e.target.value);
   };
@@ -71,7 +83,7 @@ const UserInfoStep: React.FC<UserInfoStepProps> = ({
       </p>
       <TextField label="Full Name" name="fullName" value={fullName} onChange={handleFullNameChange} />
       <TextField label="Username" name="username" value={username} onChange={handleUserNameChange} />
-      {authMethod === "email" ? (
+      {authMethod === "phone" ? (
         <TextField label="Phone Number" name="phoneNumber" value={phoneNumber} onChange={handlePhoneNumberChange} />
       ) : (
         <TextField label="Email" name="email" value={email} onChange={handleEmailChange} />

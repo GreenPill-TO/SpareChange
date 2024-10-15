@@ -4,22 +4,14 @@ import React from "react";
 interface AmountFieldProps {
   label: string;
   name: string;
-  value: string;
+  value: number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
 }
 
-const AmountField: React.FC<AmountFieldProps> = ({
-  label,
-  name,
-  value,
-  onChange,
-  placeholder = "",
-  required = false,
-  disabled = false,
-}) => {
+const AmountField: React.FC<AmountFieldProps> = ({ label, name, value, onChange, placeholder = "", required = false, disabled = false }) => {
   const inputClasses = classNames(
     "mt-1 block w-full rounded-md border-gray-300 shadow-sm",
     "focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50",

@@ -3,12 +3,12 @@ import TextField from "@TCoin/components/form/form-fields/TextField";
 import React, { useEffect } from "react";
 
 interface DonationPreferencesStepProps {
-  preferredDonationAmount: string; // Preferred donation amount in CAD
-  normalTip: number | null; // Normal tip percentage
+  preferredDonationAmount: number; // Preferred donation amount in CAD
+  defaultTip: number | null; // Default tip percentage
   goodTip: number | null; // Good tip percentage for excellent service
   selectedCause: string; // Selected cause from the dropdown
-  setPreferredDonationAmount: (value: string) => void; // Setter for preferred donation amount
-  setNormalTip: (value: number | null) => void;
+  setPreferredDonationAmount: (value: number) => void; // Setter for preferred donation amount
+  setDefaultTip: (value: number | null) => void;
   setGoodTip: (value: number | null) => void;
   setSelectedCause: (value: string) => void;
   setIsNextEnabled: (enabled: boolean) => void;
@@ -17,24 +17,24 @@ interface DonationPreferencesStepProps {
 
 const DonationPreferencesStep: React.FC<DonationPreferencesStepProps> = ({
   preferredDonationAmount,
-  normalTip,
+  defaultTip,
   goodTip,
   selectedCause,
   setPreferredDonationAmount,
-  setNormalTip,
+  setDefaultTip,
   setGoodTip,
   setSelectedCause,
   setIsNextEnabled,
 }) => {
   useEffect(() => {
     // Enable the "Next" button only if all fields are filled
-    const isComplete = preferredDonationAmount.trim() !== "" && normalTip !== null && goodTip !== null && selectedCause.trim() !== "";
+    const isComplete = preferredDonationAmount !== 0 && defaultTip !== null && goodTip !== null && selectedCause?.trim() !== "";
     setIsNextEnabled(isComplete);
-  }, [preferredDonationAmount, normalTip, goodTip, selectedCause, setIsNextEnabled]);
+  }, [preferredDonationAmount, defaultTip, goodTip, selectedCause, setIsNextEnabled]);
 
-  const handleNormalTipChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDefaultTipChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setNormalTip(value ? parseFloat(value) : null);
+    setDefaultTip(value ? parseFloat(value) : null);
   };
 
   const handleGoodTipChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,19 +50,19 @@ const DonationPreferencesStep: React.FC<DonationPreferencesStepProps> = ({
         name="preferredDonationAmount"
         value={preferredDonationAmount}
         placeholder="$5.00"
-        onChange={(e) => setPreferredDonationAmount(e.target.value)}
+        onChange={(e) => setPreferredDonationAmount(parseFloat(e.currentTarget.value))}
       />
       <TextField
-        label="Normal Tip Percentage"
-        name="normalTip"
-        value={normalTip !== null ? normalTip.toString() : ""}
+        label="Default Tip Percentage"
+        name="defaultTip"
+        value={defaultTip ? defaultTip.toString() : ""}
         placeholder="15%"
-        onChange={handleNormalTipChange}
+        onChange={handleDefaultTipChange}
       />
       <TextField
         label="Good Tip Percentage for Excellent Service"
         name="goodTip"
-        value={goodTip !== null ? goodTip.toString() : ""}
+        value={goodTip ? goodTip.toString() : ""}
         placeholder="25%"
         onChange={handleGoodTipChange}
       />
@@ -72,6 +72,7 @@ const DonationPreferencesStep: React.FC<DonationPreferencesStepProps> = ({
         value={selectedCause}
         onChange={(e) => setSelectedCause(e.target.value)}
         options={[
+          { label: "Select", value: "" },
           { label: "Food Bank", value: "Food Bank" },
           { label: "Homelessness", value: "Homelessness" },
           { label: "Clothes", value: "Clothes" },

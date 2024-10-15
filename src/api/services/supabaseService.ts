@@ -1,4 +1,5 @@
 import { createClient } from "@TCoin/lib/supabase/client";
+import { TPersona } from "@TCoin/types/persona";
 import { Session } from "@supabase/supabase-js";
 
 const supabase = createClient();
@@ -90,5 +91,19 @@ export const verifyPasscode = async ({ contact, method, passcode }: { contact: s
     }
   } catch (err) {
     throw err; // Let the calling function handle the error
+  }
+};
+
+export const getPersonas = async (): Promise<TPersona[] | null> => {
+  try {
+    const { data: personas, error: personaError } = await supabase.from("ref_personas").select("*");
+
+    if (personaError || !personas) {
+      throw new Error(`Error fetching Supabase data: ${personaError?.message}`);
+    }
+
+    return personas;
+  } catch (error) {
+    throw error;
   }
 };

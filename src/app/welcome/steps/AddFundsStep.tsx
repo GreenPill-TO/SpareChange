@@ -3,8 +3,8 @@ import PaymentForm from "@TCoin/components/form/form-fields/PaymentForm";
 import React, { useEffect } from "react";
 
 interface AddFundsStepProps {
-  preferredDonationAmount: string;
-  setPreferredDonationAmount: (value: string) => void;
+  preferredDonationAmount: number;
+  setPreferredDonationAmount: (value: number) => void;
   handleSubmitPayment: (paymentData: { cardNumber: string; expiryDate: string; cvv: string }) => void;
   setIsNextEnabled: (enabled: boolean) => void;
   nextStep: () => void;
@@ -18,7 +18,8 @@ const AddFundsStep: React.FC<AddFundsStepProps> = ({
 }) => {
   useEffect(() => {
     // Enable the "Next" button if the preferredDonationAmount is not empty
-    const isComplete = preferredDonationAmount.trim() !== "";
+    console.log("preferredDonationAmount", preferredDonationAmount);
+    const isComplete = preferredDonationAmount !== 0;
     setIsNextEnabled(isComplete);
   }, [preferredDonationAmount, setIsNextEnabled]);
 
@@ -29,7 +30,7 @@ const AddFundsStep: React.FC<AddFundsStepProps> = ({
         label="Amount to Add"
         name="amountToAdd"
         value={preferredDonationAmount}
-        onChange={(e) => setPreferredDonationAmount(e.target.value)}
+        onChange={(e) => setPreferredDonationAmount(parseFloat(e.currentTarget.value))}
       />
       <PaymentForm onSubmit={handleSubmitPayment} />
     </div>

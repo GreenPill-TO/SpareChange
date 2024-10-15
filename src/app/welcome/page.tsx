@@ -17,7 +17,7 @@ import ReceiveDonationsStep from "@TCoin/app/welcome/steps/ReceiveDonationsStep"
 import StorePaymentsStep from "@TCoin/app/welcome/steps/StorePaymentsStep";
 import StoreProfileStep from "@TCoin/app/welcome/steps/StoreProfileStep";
 import UserInfoStep from "@TCoin/app/welcome/steps/UserInfoStep";
-import { TCubidData, TPersona } from "@TCoin/types/cubid";
+import { TCubidData } from "@TCoin/types/cubid";
 import classNames from "classnames";
 
 const stepHeadings = ["Introduction", "Complete Your Profile", "Choose Your Persona", "Additional Details", "Finalize Setup", "You're All Set!"];
@@ -34,11 +34,10 @@ const WelcomeFlow: React.FC = () => {
     address: "",
     bio: "",
     profile_image_url: null,
-    preferred_donation_amount: "",
+    preferred_donation_amount: 0,
     selected_cause: "",
     good_tip: 0,
     default_tip: 0,
-    normal_tip: 0,
     persona: null,
     current_step: 1,
   });
@@ -69,9 +68,8 @@ const WelcomeFlow: React.FC = () => {
 
     const userDataUpdate: { [key: string]: any } = {
       ...userFormData,
-      preferred_donation_amount: parseFloat(userFormData.preferred_donation_amount),
+      preferred_donation_amount: userFormData.preferred_donation_amount,
       profile_image_url: userFormData.profile_image_url ? URL.createObjectURL(userFormData.profile_image_url) : null,
-      normal_tip: undefined,
     };
 
     if (Object.keys(userDataUpdate).length > 0) {
@@ -94,7 +92,7 @@ const WelcomeFlow: React.FC = () => {
   }, [userFormData]);
 
   const handlePersonaSelection = useCallback(
-    (selectedPersona: TPersona) => {
+    (selectedPersona: string) => {
       setUserFormData({ ...userFormData, persona: selectedPersona });
       setIsNextEnabled(true); // Enable the Continue button after persona selection
     },
@@ -161,7 +159,7 @@ const WelcomeFlow: React.FC = () => {
               )}
               {userFormData.current_step === 4 && userFormData.persona && (
                 <>
-                  {(userFormData.persona === "support-seeker" || userFormData.persona === "service-worker") && (
+                  {(userFormData.persona === "ph" || userFormData.persona === "tip") && (
                     <PublicProfileCreationStep
                       bio={userFormData.bio}
                       address={userFormData.address}
@@ -173,17 +171,17 @@ const WelcomeFlow: React.FC = () => {
                       nextStep={nextStep}
                     />
                   )}
-                  {userFormData.persona === "store" && <StorePaymentsStep nextStep={nextStep} setIsNextEnabled={setIsNextEnabled} />}
-                  {userFormData.persona === "donor" && (
+                  {userFormData.persona === "sm" && <StorePaymentsStep nextStep={nextStep} setIsNextEnabled={setIsNextEnabled} />}
+                  {userFormData.persona === "dr" && (
                     <DonationPreferencesStep
-                      preferredDonationAmount={userFormData.preferred_donation_amount}
+                      preferredDonationAmount={userFormData.preferred_donation_amount || 0}
                       selectedCause={userFormData.selected_cause}
                       goodTip={userFormData.good_tip}
-                      normalTip={userFormData.normal_tip}
+                      defaultTip={userFormData.default_tip}
                       setPreferredDonationAmount={(v) => updateUserFormField("preferred_donation_amount", v)}
                       setSelectedCause={(v) => updateUserFormField("selected_cause", v)}
                       setGoodTip={(v) => updateUserFormField("good_tip", v)}
-                      setNormalTip={(v) => updateUserFormField("normal_tip", v)}
+                      setDefaultTip={(v) => updateUserFormField("default_tip", v)}
                       setIsNextEnabled={setIsNextEnabled}
                       nextStep={nextStep}
                     />
@@ -192,10 +190,10 @@ const WelcomeFlow: React.FC = () => {
               )}
               {userFormData.current_step === 5 && userFormData.persona && (
                 <>
-                  {(userFormData.persona === "support-seeker" || userFormData.persona === "service-worker") && (
+                  {(userFormData.persona === "ph" || userFormData.persona === "tip") && (
                     <ReceiveDonationsStep nextStep={nextStep} setIsNextEnabled={setIsNextEnabled} />
                   )}
-                  {userFormData.persona === "store" && (
+                  {userFormData.persona === "sm" && (
                     <StoreProfileStep
                       fullName={userFormData.full_name}
                       phoneNumber={userFormData.phone}
@@ -207,9 +205,9 @@ const WelcomeFlow: React.FC = () => {
                       setIsNextEnabled={setIsNextEnabled}
                     />
                   )}
-                  {userFormData.persona === "donor" && (
+                  {userFormData.persona === "dr" && (
                     <AddFundsStep
-                      preferredDonationAmount={userFormData.preferred_donation_amount}
+                      preferredDonationAmount={userFormData.preferred_donation_amount || 0}
                       setPreferredDonationAmount={(v) => updateUserFormField("preferred_donation_amount", v)}
                       handleSubmitPayment={() => {}}
                       nextStep={nextStep}
