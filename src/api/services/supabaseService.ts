@@ -58,6 +58,8 @@ export const getSession = async (): Promise<Session | null> => {
 export const signOut = async () => {
   try {
     await supabase.auth.signOut();
+    localStorage.removeItem("supabase.auth.token");
+    sessionStorage.removeItem("supabase.auth.token");
   } catch (error) {
     throw error;
   }
