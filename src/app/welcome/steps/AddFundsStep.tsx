@@ -18,7 +18,6 @@ const AddFundsStep: React.FC<AddFundsStepProps> = ({
 }) => {
   useEffect(() => {
     // Enable the "Next" button if the preferredDonationAmount is not empty
-    console.log("preferredDonationAmount", preferredDonationAmount);
     const isComplete = preferredDonationAmount !== 0;
     setIsNextEnabled(isComplete);
   }, [preferredDonationAmount, setIsNextEnabled]);

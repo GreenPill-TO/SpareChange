@@ -64,7 +64,7 @@ export const useAuth = () => {
     userData: userQuery.data,
     isAuthenticated: !!authQuery?.data,
     error: userQuery.error || authQuery.error,
-    isLoading: authQuery.isLoading,
+    isLoading: authQuery.isLoading || userQuery.isLoading,
     isLoadingUser: userQuery.isLoading,
     signOut: signOutMutation.mutate,
   };

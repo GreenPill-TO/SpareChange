@@ -21,56 +21,50 @@ import { TCubidData } from "@TCoin/types/cubid";
 import classNames from "classnames";
 
 const stepHeadings = ["Introduction", "Complete Your Profile", "Choose Your Persona", "Additional Details", "Finalize Setup", "You're All Set!"];
+const initialFormData = {
+  full_name: "",
+  username: "",
+  email: "",
+  phone: "",
+  address: "",
+  bio: "",
+  profile_image_url: null,
+  preferred_donation_amount: 0,
+  selected_cause: "",
+  good_tip: 0,
+  default_tip: 0,
+  persona: null,
+  current_step: 1,
+  updated_at: new Date().toUTCString(),
+};
 
 const WelcomeFlow: React.FC = () => {
   const router = useRouter();
   const { userData } = useAuth();
 
-  const [userFormData, setUserFormData] = useState<TCubidData>({
-    full_name: "",
-    username: "",
-    email: "",
-    phone: "",
-    address: "",
-    bio: "",
-    profile_image_url: null,
-    preferred_donation_amount: 0,
-    selected_cause: "",
-    good_tip: 0,
-    default_tip: 0,
-    persona: null,
-    current_step: 1,
-    updated_at: new Date().toString(),
-  });
+  const [userFormData, setUserFormData] = useState<TCubidData>(
+    userData?.cubidData?.current_step && userData?.cubidData?.current_step > 1 ? { ...userData?.cubidData } : initialFormData
+  );
 
   const [isNextEnabled, setIsNextEnabled] = useState<boolean>(true);
 
-  // Function to load initial data from Supabase
-  const loadInitialData = async () => {
-    const currentStep = userData?.cubidData?.current_step;
-
-    // If the user is past step 1, fetch the full user record
-    if (currentStep && currentStep > 1) {
-      // Prepopulate the state with the fetched data
-      setUserFormData(JSON.parse(JSON.stringify(userData?.cubidData)));
-    }
-  };
-
-  useEffect(() => {
-    loadInitialData(); // Load data on component mount
-  }, []);
+  const mainClass = classNames(
+    "welcome-flow-container flex-grow flex flex-col items-center justify-center",
+    "bg-gradient-to-r from-magenta-500 to-indigo-500 dark:text-whitetext-gray-900"
+  );
 
   const saveToLocalStorage = () => {
     localStorage.setItem("welcomeFlowData", JSON.stringify(userFormData));
   };
 
-  const syncToSupabase = async () => {
+  const syncToSupabase = async (isCompleted?: boolean) => {
     const cubidId = userData?.user?.cubid_id;
 
     const userDataUpdate: { [key: string]: any } = {
       ...userFormData,
       preferred_donation_amount: userFormData.preferred_donation_amount,
-      profile_image_url: userFormData.profile_image_url ? URL.createObjectURL(userFormData.profile_image_url) : null,
+      // profile_image_url: userFormData.profile_image_url ? URL.createObjectURL(userFormData.profile_image_url) : null,
+      has_completed_intro: isCompleted ? true : undefined,
     };
 
     if (Object.keys(userDataUpdate).length > 0) {
@@ -114,12 +108,7 @@ const WelcomeFlow: React.FC = () => {
   }, [userFormData.current_step]);
 
   return (
-    <div
-      className={classNames(
-        "welcome-flow-container min-h-screen flex flex-col items-center justify-center",
-        "bg-gradient-to-r from-magenta-500 to-indigo-500 dark:text-whitetext-gray-900"
-      )}
-    >
+    <div className={mainClass}>
       <div className={classNames("w-full max-w-4xl p-6 rounded-lg shadow-lg", "dark:bg-gray-800 dark:text-white bg-white text-gray-900")}>
         {/* Carousel for Progress */}
         <div className="flex justify-center mb-4">
@@ -221,7 +210,7 @@ const WelcomeFlow: React.FC = () => {
                 <FinalWelcomeStep
                   onDashboardRedirect={() => {
                     saveToLocalStorage();
-                    syncToSupabase();
+                    syncToSupabase(true);
                     router.push("/dashboard");
                   }}
                 />
