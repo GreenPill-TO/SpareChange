@@ -40,6 +40,7 @@ const WelcomeFlow: React.FC = () => {
     default_tip: 0,
     persona: null,
     current_step: 1,
+    updated_at: new Date().toString(),
   });
 
   const [isNextEnabled, setIsNextEnabled] = useState<boolean>(true);
@@ -49,7 +50,7 @@ const WelcomeFlow: React.FC = () => {
     const currentStep = userData?.cubidData?.current_step;
 
     // If the user is past step 1, fetch the full user record
-    if (currentStep > 1) {
+    if (currentStep && currentStep > 1) {
       // Prepopulate the state with the fetched data
       setUserFormData(JSON.parse(JSON.stringify(userData?.cubidData)));
     }

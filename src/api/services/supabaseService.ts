@@ -1,4 +1,5 @@
 import { createClient } from "@TCoin/lib/supabase/client";
+import { TCubidData } from "@TCoin/types/cubid";
 import { TPersona } from "@TCoin/types/persona";
 import { Session } from "@supabase/supabase-js";
 
@@ -36,7 +37,7 @@ export const fetchCubidDataFromSupabase = async (cubid_id: string) => {
     throw new Error(`Error fetching Supabase data: ${supabaseError?.message}`);
   }
 
-  return supabaseData;
+  return supabaseData as TCubidData;
 };
 
 export const updateCubidDataInSupabase = async (cubidId: string, updatedFields: Record<string, any>) => {

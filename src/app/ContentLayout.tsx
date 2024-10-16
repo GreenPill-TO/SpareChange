@@ -35,16 +35,20 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       {!isLoading ? (
         <section className={bodyClass}>
           <Navbar />
-          <div className="flex-grow flex flex-col dark:bg-gradient-to-r dark:from-gray-800 dark:to-gray-700 bg-gradient-to-r from-gray-200 to-gray-10">
+          <div
+            className={classNames(
+              "flex-grow flex flex-col",
+              "dark:bg-gradient-to-r dark:from-gray-800 dark:to-gray-700",
+              "bg-gradient-to-r from-gray-200 to-gray-10"
+            )}
+          >
             {children}
           </div>
           <Footer />
           <ToastContainer autoClose={1000} transition={Flip} theme={"colored"} />
         </section>
       ) : (
-        <section className={bodyClass}>
-          <div> Loading ... </div>
-        </section>
+        <div className={bodyClass}>...loading </div>
       )}
     </div>
   );
