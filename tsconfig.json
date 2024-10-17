@@ -18,7 +18,9 @@
       }
     ],
     "paths": {
-      "@TCoin/*": ["./src/*"]
+      "@TCoin/*": ["./src/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/components/*": ["./src/components/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
