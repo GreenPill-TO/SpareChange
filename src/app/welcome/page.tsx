@@ -5,19 +5,19 @@ import { useCallback, useEffect, useState } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 // Import all the step components
-import { useAuth } from "@TCoin/api/hooks/useAuth";
-import { updateCubidDataInSupabase } from "@TCoin/api/services/supabaseService";
-import AddFundsStep from "@TCoin/app/welcome/steps/AddFundsStep";
-import DonationPreferencesStep from "@TCoin/app/welcome/steps/DonationPreferencesStep";
-import FinalWelcomeStep from "@TCoin/app/welcome/steps/FinalWelcomeStep";
-import OnboardingIntroStep from "@TCoin/app/welcome/steps/OnboardingIntroStep";
-import PersonaSelectionStep from "@TCoin/app/welcome/steps/PersonaSelectionStep";
-import PublicProfileCreationStep from "@TCoin/app/welcome/steps/PublicProfileCreationStep";
-import ReceiveDonationsStep from "@TCoin/app/welcome/steps/ReceiveDonationsStep";
-import StorePaymentsStep from "@TCoin/app/welcome/steps/StorePaymentsStep";
-import StoreProfileStep from "@TCoin/app/welcome/steps/StoreProfileStep";
-import UserInfoStep from "@TCoin/app/welcome/steps/UserInfoStep";
-import { TCubidData } from "@TCoin/types/cubid";
+import { useAuth } from "@/api/hooks/useAuth";
+import { updateCubidDataInSupabase } from "@/api/services/supabaseService";
+import AddFundsStep from "@/app/welcome/steps/AddFundsStep";
+import DonationPreferencesStep from "@/app/welcome/steps/DonationPreferencesStep";
+import FinalWelcomeStep from "@/app/welcome/steps/FinalWelcomeStep";
+import OnboardingIntroStep from "@/app/welcome/steps/OnboardingIntroStep";
+import PersonaSelectionStep from "@/app/welcome/steps/PersonaSelectionStep";
+import PublicProfileCreationStep from "@/app/welcome/steps/PublicProfileCreationStep";
+import ReceiveDonationsStep from "@/app/welcome/steps/ReceiveDonationsStep";
+import StorePaymentsStep from "@/app/welcome/steps/StorePaymentsStep";
+import StoreProfileStep from "@/app/welcome/steps/StoreProfileStep";
+import UserInfoStep from "@/app/welcome/steps/UserInfoStep";
+import { TCubidData } from "@/types/cubid";
 import classNames from "classnames";
 
 const stepHeadings = ["Introduction", "Complete Your Profile", "Choose Your Persona", "Additional Details", "Finalize Setup", "You're All Set!"];

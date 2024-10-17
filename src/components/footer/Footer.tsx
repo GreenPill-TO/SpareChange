@@ -1,5 +1,5 @@
-import { MarkdownViewer } from "@TCoin/components/markdown-viewer";
-import { useModal } from "@TCoin/contexts/ModalContext";
+import { MarkdownViewer } from "@/components/markdown-viewer";
+import { useModal } from "@/contexts/ModalContext";
 import classNames from "classnames";
 
 export function Footer() {

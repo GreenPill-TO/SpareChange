@@ -1,5 +1,5 @@
 "use client";
-import { useAuth } from "@TCoin/api/hooks/useAuth";
+import { useAuth } from "@/api/hooks/useAuth";
 import classNames from "classnames";
 import { useMemo } from "react";
 import { DonorScreen, PanhandlerScreen, WalletScreen } from "./screens";
@@ -13,7 +13,7 @@ export default function Dashboard() {
     if (isLoadingUser || error) return null;
 
     switch (userData?.cubidData?.persona) {
-      case "ph":
+      case "ph1":
         return <PanhandlerScreen />;
       case "dr":
         return <DonorScreen />;

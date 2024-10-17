@@ -1,12 +1,12 @@
 "use client";
 
-import CallToAction from "@TCoin/components/home/CallToAction";
-import Features from "@TCoin/components/home/Features";
-import Hero from "@TCoin/components/home/Hero";
-import HowItWorks from "@TCoin/components/home/HowItWorks";
-import Testimonials from "@TCoin/components/home/Testimonials";
-import SignInModal from "@TCoin/components/modal/SignInModal";
-import { useModal } from "@TCoin/contexts/ModalContext";
+import CallToAction from "@/components/home/CallToAction";
+import Features from "@/components/home/Features";
+import Hero from "@/components/home/Hero";
+import HowItWorks from "@/components/home/HowItWorks";
+import Testimonials from "@/components/home/Testimonials";
+import SignInModal from "@/components/modal/SignInModal";
+import { useModal } from "@/contexts/ModalContext";
 
 export default function Home() {
   const { openModal, closeModal } = useModal();

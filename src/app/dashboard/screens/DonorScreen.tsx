@@ -1,3 +1,3 @@
 export function DonorScreen() {
-  return <div> Donner </div>;
+  return <div> Donor </div>;
 }

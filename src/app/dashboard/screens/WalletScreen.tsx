@@ -1,4 +1,4 @@
-import { MobileWalletDashboardComponent } from "@TCoin/app/dashboard/screens/WalletComponent";
+import { MobileWalletDashboardComponent } from "@/app/dashboard/screens/WalletComponent";
 
 export function WalletScreen() {
   return (

@@ -1,7 +1,7 @@
-import { ModalProvider } from "@TCoin/contexts/ModalContext";
-import DarkModeProvider from "@TCoin/lib/dark-mode-provider";
-import { ReactQueryProvider } from "@TCoin/lib/react-query-provider";
-import "@TCoin/styles/globals.scss";
+import { ModalProvider } from "@/contexts/ModalContext";
+import DarkModeProvider from "@/lib/dark-mode-provider";
+import { ReactQueryProvider } from "@/lib/react-query-provider";
+import "@/styles/globals.scss";
 import type { Metadata } from "next";
 import ContentLayout from "./ContentLayout";
 

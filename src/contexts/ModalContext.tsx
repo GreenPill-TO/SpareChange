@@ -1,6 +1,6 @@
 "use client";
 
-import Modal from "@TCoin/components/modal/Modal";
+import Modal from "@/components/modal/Modal";
 import React, { createContext, ReactNode, useContext, useState } from "react";
 
 type TModalSize = "small" | "medium" | "large";

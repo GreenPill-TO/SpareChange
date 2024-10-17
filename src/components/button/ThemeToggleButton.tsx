@@ -1,7 +1,7 @@
 "use client";
 
+import useDarkMode from "@/hooks/useDarkMode";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
-import useDarkMode from "@TCoin/hooks/useDarkMode";
 
 export default function ThemeToggleButton() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();

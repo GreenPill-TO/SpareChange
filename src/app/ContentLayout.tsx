@@ -1,9 +1,9 @@
 // app/ClientLayout.tsx
 "use client";
 
-import { useAuth } from "@TCoin/api/hooks/useAuth";
-import { Footer } from "@TCoin/components/footer";
-import Navbar from "@TCoin/components/navbar";
+import { useAuth } from "@/api/hooks/useAuth";
+import { Footer } from "@/components/footer";
+import Navbar from "@/components/navbar";
 import classNames from "classnames";
 import { GeistSans } from "geist/font/sans";
 import { useRouter } from "next/navigation";

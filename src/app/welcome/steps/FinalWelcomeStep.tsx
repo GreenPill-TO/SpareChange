@@ -1,5 +1,5 @@
-import Button from "@TCoin/components/form/form-fields/Button";
-import InfoBox from "@TCoin/components/form/form-fields/InfoBox";
+import Button from "@/components/form/form-fields/Button";
+import InfoBox from "@/components/form/form-fields/InfoBox";
 import React from "react";
 
 interface FinalWelcomeStepProps {

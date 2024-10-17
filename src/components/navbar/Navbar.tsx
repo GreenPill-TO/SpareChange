@@ -1,5 +1,5 @@
-import { useAuth } from "@TCoin/api/hooks/useAuth";
-import { useModal } from "@TCoin/contexts/ModalContext";
+import { useAuth } from "@/api/hooks/useAuth";
+import { useModal } from "@/contexts/ModalContext";
 import classNames from "classnames";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";

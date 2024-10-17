@@ -1,5 +1,5 @@
-import Dropdown from "@TCoin/components/form/form-fields/Dropdown";
-import TextField from "@TCoin/components/form/form-fields/TextField";
+import Dropdown from "@/components/form/form-fields/Dropdown";
+import TextField from "@/components/form/form-fields/TextField";
 import React, { useEffect } from "react";
 
 interface DonationPreferencesStepProps {

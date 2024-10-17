@@ -1,6 +1,6 @@
-import { createClient } from "@TCoin/lib/supabase/client";
-import { TCubidData } from "@TCoin/types/cubid";
-import { TPersona } from "@TCoin/types/persona";
+import { createClient } from "@/lib/supabase/client";
+import { TCubidData } from "@/types/cubid";
+import { TPersona } from "@/types/persona";
 import { Session } from "@supabase/supabase-js";
 
 const supabase = createClient();

@@ -1,4 +1,4 @@
-import { isValidUUID } from "@TCoin/utils/validators";
+import { isValidUUID } from "@/utils/validators";
 import axios from "axios";
 
 export const createCubidUser = async (fullContact: string, authMethod: "phone" | "email") => {

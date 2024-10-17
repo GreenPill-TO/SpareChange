@@ -1,6 +1,6 @@
-import { useAuth } from "@TCoin/api/hooks/useAuth";
+import { useAuth } from "@/api/hooks/useAuth";
 
-export function PanholderScreen() {
+export function PanhandlerScreen() {
   const { userData } = useAuth();
 
   return <div> {userData?.cubidData?.full_name} </div>;

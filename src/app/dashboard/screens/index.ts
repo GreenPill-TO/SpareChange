@@ -1,4 +1,4 @@
-export * from "./DonorScreen1";
-export * from "./PanhandlerScreen1";
+export * from "./DonorScreen";
+export * from "./PanhandlerScreen";
 export * from "./WalletComponent";
-export * from "./WalletScreen1";
+export * from "./WalletScreen";

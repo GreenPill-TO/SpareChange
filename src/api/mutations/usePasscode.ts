@@ -1,5 +1,5 @@
+import { TPasscodeMutationParams, TSendPasscodeInput, TVerifyPasscodeInput } from "@/types/passcode";
 import { useMutation } from "@tanstack/react-query";
-import { TPasscodeMutationParams, TSendPasscodeInput, TVerifyPasscodeInput } from "@TCoin/types/passcode";
 import { sendPasscode, verifyPasscode } from "../services/supabaseService";
 
 // Custom hook for sending the passcode

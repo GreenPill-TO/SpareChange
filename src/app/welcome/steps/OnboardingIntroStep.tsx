@@ -1,6 +1,6 @@
-import Button from "@TCoin/components/form/form-fields/Button";
-import IconList from "@TCoin/components/form/form-fields/IconList";
-import InfoBox from "@TCoin/components/form/form-fields/InfoBox";
+import Button from "@/components/form/form-fields/Button";
+import IconList from "@/components/form/form-fields/IconList";
+import InfoBox from "@/components/form/form-fields/InfoBox";
 import React from "react";
 import { FaHandHoldingHeart, FaHeart, FaRecycle, FaShoppingCart } from "react-icons/fa";
 

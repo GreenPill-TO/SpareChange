@@ -1,5 +1,5 @@
 export * from "./OTPForm";
-import { countryCodes, formatPhoneNumber } from "@TCoin/utils/phone-data";
+import { countryCodes, formatPhoneNumber } from "@/utils/phone-data";
 import { ChangeEvent, FormEvent } from "react";
 import { Spinner } from "../icons";
 
@@ -59,9 +59,7 @@ function OTPForm({
 
         {isOtpSent && (
           <>
-            <p className="text-center text-lg md:mt-0 mt-6 font-semibold">
-              Enter verification code received on {contact}
-            </p>
+            <p className="text-center text-lg md:mt-0 mt-6 font-semibold">Enter verification code received on {contact}</p>
             <p className="text-center text-slate-500 mt-2 text-sm">Didn't receive the code? Check your spam folder</p>
           </>
         )}
@@ -108,9 +106,7 @@ function OTPForm({
         {isOtpSent && (
           <div className="form-control w-full mt-8">
             <label className="label">
-              <span className="label-text text-base-content text-xs text-slate-600 dark:text-slate-300">
-                Verification Code
-              </span>
+              <span className="label-text text-base-content text-xs text-slate-600 dark:text-slate-300">Verification Code</span>
             </label>
             <input
               type="text"
