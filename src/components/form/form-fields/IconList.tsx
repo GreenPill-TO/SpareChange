@@ -6,14 +6,12 @@ interface IconListProps {
 }
 
 const IconList: React.FC<IconListProps> = ({ items }) => {
-  const textClasses = "dark:text-white text-gray-900";
-
   return (
     <ul className="icon-list space-y-4">
       {items.map((item, index) => (
         <li key={index} className="flex items-center">
-          <item.icon className={`mr-2 ${textClasses}`} size={24} />
-          <span className={textClasses}>{item.text}</span>
+          <item.icon className={`mr-2 `} size={24} />
+          <span>{item.text}</span>
         </li>
       ))}
     </ul>

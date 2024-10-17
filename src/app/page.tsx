@@ -1,10 +1,10 @@
 "use client";
 
-import CallToAction from "@/components/home/CallToAction";
-import Features from "@/components/home/Features";
-import Hero from "@/components/home/Hero";
-import HowItWorks from "@/components/home/HowItWorks";
-import Testimonials from "@/components/home/Testimonials";
+import CallToAction from "@/app/home/CallToAction";
+import Features from "@/app/home/Features";
+import Hero from "@/app/home/Hero";
+import HowItWorks from "@/app/home/HowItWorks";
+import Testimonials from "@/app/home/Testimonials";
 import SignInModal from "@/components/modal/SignInModal";
 import { useModal } from "@/contexts/ModalContext";
 

@@ -3,7 +3,7 @@
 import useDarkMode from "@/hooks/useDarkMode";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
 
-export default function ThemeToggleButton() {
+export function ThemeToggleButton() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   return (

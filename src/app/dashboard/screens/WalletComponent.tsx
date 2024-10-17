@@ -1,30 +1,14 @@
 "use client";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  Input,
-  Label,
-  RadioGroup,
-  RadioGroupItem,
-  Switch,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/wallet-ui";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/Dialog";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
+import { Switch } from "@/components/ui/Switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Camera, CreditCard, DollarSign, QrCode, Send, Share2, User, Users } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";

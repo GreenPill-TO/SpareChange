@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/Button";
 import classNames from "classnames";
 import React, { useState } from "react";
 
@@ -56,27 +57,11 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ onSubmit }) => {
         <label htmlFor="cvv" className={`block text-sm font-medium dark:text-white text-gray-700`}>
           CVV
         </label>
-        <input
-          id="cvv"
-          name="cvv"
-          type="text"
-          value={cvv}
-          onChange={(e) => setCvv(e.target.value)}
-          className={inputClasses}
-          required
-        />
+        <input id="cvv" name="cvv" type="text" value={cvv} onChange={(e) => setCvv(e.target.value)} className={inputClasses} required />
       </div>
-      <button
-        type="submit"
-        className={classNames(
-          "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm",
-          "focus:outline-none focus:ring-2 focus:ring-offset-2",
-          "dark:bg-indigo-600 dark:text-white dark:hover:bg-indigo-700 dark:focus:ring-indigo-500",
-          "bg-indigo-500 text-white hover:bg-indigo-600 focus:ring-indigo-400"
-        )}
-      >
+      <Button type="submit" className={classNames("inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium")}>
         Submit Payment
-      </button>
+      </Button>
     </form>
   );
 };

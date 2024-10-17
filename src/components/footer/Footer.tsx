@@ -10,14 +10,7 @@ export function Footer() {
   };
 
   return (
-    <footer
-      className={classNames(
-        "py-6 w-full",
-        "dark:bg-gradient-to-r dark:from-gray-900 dark:to-black dark:text-white",
-        "bg-gradient-to-r from-gray-100 to-white text-black",
-        "shadow-top"
-      )}
-    >
+    <footer className={classNames("py-6 w-full", "bg-background", "shadow-top")}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           <div>

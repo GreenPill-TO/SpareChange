@@ -1,5 +1,5 @@
-import Button from "@/components/form/form-fields/Button";
-import InfoBox from "@/components/form/form-fields/InfoBox";
+import { Button } from "@/components/ui/Button";
+import InfoBox from "@/components/ui/InfoBox";
 import React from "react";
 
 interface FinalWelcomeStepProps {
@@ -11,7 +11,7 @@ const FinalWelcomeStep: React.FC<FinalWelcomeStepProps> = ({ onDashboardRedirect
     <div className="final-welcome-step">
       <h2 className="text-2xl font-bold">You're All Set!</h2>
       <InfoBox message="Your account is ready to go. You can now start exploring, donating, or receiving support!" />
-      <Button label="Go to Dashboard" onClick={onDashboardRedirect} />
+      <Button onClick={onDashboardRedirect}>Go to Dashboard</Button>
     </div>
   );
 };

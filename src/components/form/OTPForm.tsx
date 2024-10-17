@@ -2,6 +2,7 @@ export * from "./OTPForm";
 import { countryCodes, formatPhoneNumber } from "@/utils/phone-data";
 import { ChangeEvent, FormEvent } from "react";
 import { Spinner } from "../icons";
+import { Button } from "../ui/Button";
 
 type OTPFormProps = {
   authMethod: "phone" | "email";
@@ -122,10 +123,10 @@ function OTPForm({
       {/* Display error only for phone authMethod */}
       {authMethod === "phone" && errorMessage && <div className="text-rose-500">{errorMessage}</div>}
 
-      <button type="submit" className="btn mt-2 normal-case w-full btn-primary text-white" disabled={isLoading}>
+      <Button type="submit" className="mt-2 w-full" disabled={isLoading}>
         {isLoading && <Spinner />}
         {isOtpSent ? "Verify" : "Get Verification Code"}
-      </button>
+      </Button>
     </form>
   );
 }

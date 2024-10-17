@@ -7,7 +7,7 @@ import { DonorScreen, PanhandlerScreen, WalletScreen } from "./screens";
 export default function Dashboard() {
   const { userData, error, isLoadingUser } = useAuth();
 
-  const mainClass = classNames("pt-24 p-8");
+  const mainClass = classNames("p-8");
 
   const screenContent = useMemo(() => {
     if (isLoadingUser || error) return null;

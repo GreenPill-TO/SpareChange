@@ -1,6 +1,6 @@
-import Button from "@/components/form/form-fields/Button";
 import IconList from "@/components/form/form-fields/IconList";
-import InfoBox from "@/components/form/form-fields/InfoBox";
+import { Button } from "@/components/ui/Button";
+import InfoBox from "@/components/ui/InfoBox";
 import React from "react";
 import { FaHandHoldingHeart, FaHeart, FaRecycle, FaShoppingCart } from "react-icons/fa";
 
@@ -10,7 +10,7 @@ interface OnboardingIntroStepProps {
 
 const OnboardingIntroStep: React.FC<OnboardingIntroStepProps> = ({ nextStep }) => {
   return (
-    <div className={`onboarding-intro-step dark:bg-gray-900 dark:text-white bg-white text-gray-900 p-6 space-y-6`}>
+    <div className={`p-6 space-y-6`}>
       <h2 className="text-2xl font-bold">Welcome to SpareChange!</h2>
       <InfoBox message="SpareChange helps you receive or give support within your community. Here's how it works:" />
       <IconList
@@ -25,7 +25,9 @@ const OnboardingIntroStep: React.FC<OnboardingIntroStepProps> = ({ nextStep }) =
         ]}
       />
       <div className="flex justify-end mt-4">
-        <Button label="Let's Get Started" onClick={nextStep} />
+        <Button onClick={nextStep} variant="secondary">
+          Let's Get Started
+        </Button>
       </div>
     </div>
   );

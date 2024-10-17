@@ -1,4 +1,5 @@
 import { useAuth } from "@/api/hooks/useAuth";
+import { Button } from "@/components/ui/Button";
 
 type CallToActionProps = {
   onAuthClick: () => void;
@@ -14,12 +15,9 @@ function CallToAction({ onAuthClick }: CallToActionProps) {
           {isAuthenticated ? "Next Step: Add some funds to your account" : "Ready to make a difference?"}
         </h2>
         {!isAuthenticated && (
-          <button
-            onClick={onAuthClick}
-            className="px-6 py-3 bg-white text-blue-500 font-bold rounded-lg shadow-md hover:bg-blue-100 transition-colors"
-          >
+          <Button onClick={onAuthClick} className="px-6 py-3">
             Sign Up Now
-          </button>
+          </Button>
         )}
       </div>
     </section>

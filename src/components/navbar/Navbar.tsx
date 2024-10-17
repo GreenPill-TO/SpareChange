@@ -1,11 +1,13 @@
 import { useAuth } from "@/api/hooks/useAuth";
 import { useModal } from "@/contexts/ModalContext";
-import classNames from "classnames";
+import { cn } from "@/lib/classnames";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ThemeToggleButton } from "../button";
 import SignInModal from "../modal/SignInModal";
+import { Avatar, AvatarImage } from "../ui/Avatar";
+import { Button } from "../ui/Button";
 import NavLink from "./NavLink";
+import { ThemeToggleButton } from "./ThemeToggleButton";
 
 export default function Navbar() {
   const { openModal, closeModal } = useModal();
@@ -48,34 +50,13 @@ export default function Navbar() {
   }, [isAuthenticated]);
 
   const Account = () => {
-    return (
-      <div
-        className={classNames(
-          "bg-el-3 dark:bg-el-3-dark",
-          "hover:bg-el-3/70 hover:dark:bg-el-3-dark/70",
-          "px-4 py-2 rounded-lg",
-          "text-sm font-semibold text-primary dark:text-primary-dark",
-          "cursor-pointer",
-          "flex items-center"
-        )}
-      >
-        {isAuthenticated ? (
-          <button onClick={() => signOut()} className="focus:outline-none">
-            <img src="/images/user-profile.png" alt="User Icon" className="w-6 h-6 rounded-full" />
-          </button>
-        ) : (
-          <button
-            onClick={onAuth}
-            className={classNames(
-              "px-4 py-2 rounded-lg shadow-md focus:outline-none",
-              "dark:bg-blue-500 dark:text-white dark:hover:bg-blue-700 bg-blue-500 text-white hover:bg-blue-700"
-            )}
-          >
-            Authenticate
-          </button>
-        )}
-      </div>
-    );
+    if (isAuthenticated)
+      return (
+        <Avatar onClick={() => signOut()}>
+          <AvatarImage src={"https://github.com/shadcn.png"} />
+        </Avatar>
+      );
+    return <Button onClick={onAuth}>Authenticate</Button>;
   };
 
   const homePageLinks = useMemo(() => {
@@ -98,9 +79,13 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`shadow w-full z-20 fixed top-0 transition-transform duration-300 dark:bg-gray-900 dark:text-white bg-white text-gray-900 ${
-        isVisible ? "translate-y-0" : "-translate-y-full"
-      }`}
+      className={cn(
+        "shadow w-full z-20 fixed top-0",
+        "bg-background",
+        "transition-transform duration-300",
+        { "translate-y-0": isVisible },
+        { "-translate-y-full": !isVisible }
+      )}
     >
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center max-w-7xl mx-auto">
