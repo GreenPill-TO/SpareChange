@@ -1,6 +1,5 @@
-import AddressField from "@/components/form/form-fields/AddressField";
-import Dropdown from "@/components/form/form-fields/Dropdown";
-import TextField from "@/components/form/form-fields/TextField";
+import Dropdown from "@/components/ui/Dropdown";
+import InputField from "@/components/ui/InputField";
 import React, { useEffect } from "react";
 
 interface StoreProfileStepProps {
@@ -14,7 +13,7 @@ interface StoreProfileStepProps {
   nextStep: () => void;
 }
 
-const StoreProfileStep: React.FC<StoreProfileStepProps> = ({
+export const StoreProfileStep: React.FC<StoreProfileStepProps> = ({
   fullName,
   phoneNumber,
   address,
@@ -30,9 +29,9 @@ const StoreProfileStep: React.FC<StoreProfileStepProps> = ({
   }, [fullName, phoneNumber, setIsNextEnabled]);
 
   return (
-    <div className={`store-profile-step dark:bg-gray-900 dark:text-whitebg-white text-gray-900 p-6 space-y-6`}>
+    <div className={`p-6 space-y-6`}>
       <h2 className="text-2xl font-bold">Profile Your Store</h2>
-      <TextField label="Store Name" name="storeName" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+      <InputField label="Store Name" name="storeName" value={fullName} onChange={(e) => setFullName(e.target.value)} />
       <Dropdown
         label="Category"
         name="category"
@@ -44,9 +43,9 @@ const StoreProfileStep: React.FC<StoreProfileStepProps> = ({
           { label: "Service", value: "service" },
         ]}
       />
-      <AddressField label="Store Location" name="storeLocation" value={address} onChange={(e) => setAddress(e.target.value)} />
-      <TextField label="Contact Information" name="contactInfo" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-      <TextField
+      <InputField label="Store Location" name="storeLocation" value={address} onChange={(e) => setAddress(e.target.value)} />
+      <InputField label="Contact Information" name="contactInfo" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+      <InputField
         label="Max Tip/Donation Percentage"
         name="maxTip"
         value={fullName} // Replace with the appropriate state if this is a mistake
@@ -55,5 +54,3 @@ const StoreProfileStep: React.FC<StoreProfileStepProps> = ({
     </div>
   );
 };
-
-export default StoreProfileStep;

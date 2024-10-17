@@ -4,7 +4,7 @@ import { cn } from "@/lib/classnames";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import SignInModal from "../modal/SignInModal";
-import { Avatar, AvatarImage } from "../ui/Avatar";
+import { Avatar } from "../ui/Avatar";
 import { Button } from "../ui/Button";
 import NavLink from "./NavLink";
 import { ThemeToggleButton } from "./ThemeToggleButton";
@@ -50,12 +50,7 @@ export default function Navbar() {
   }, [isAuthenticated]);
 
   const Account = () => {
-    if (isAuthenticated)
-      return (
-        <Avatar onClick={() => signOut()}>
-          <AvatarImage src={"https://github.com/shadcn.png"} />
-        </Avatar>
-      );
+    if (isAuthenticated) return <Avatar onClick={() => signOut()} src={"https://github.com/shadcn.png"} alt={"Avatar"}></Avatar>;
     return <Button onClick={onAuth}>Authenticate</Button>;
   };
 

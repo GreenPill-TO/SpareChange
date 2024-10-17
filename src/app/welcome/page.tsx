@@ -6,20 +6,22 @@ import { useCallback, useEffect, useState } from "react";
 // Import all the step components
 import { useAuth } from "@/api/hooks/useAuth";
 import { updateCubidDataInSupabase } from "@/api/services/supabaseService";
-import AddFundsStep from "@/app/welcome/steps/AddFundsStep";
-import DonationPreferencesStep from "@/app/welcome/steps/DonationPreferencesStep";
-import FinalWelcomeStep from "@/app/welcome/steps/FinalWelcomeStep";
-import OnboardingIntroStep from "@/app/welcome/steps/OnboardingIntroStep";
-import PersonaSelectionStep from "@/app/welcome/steps/PersonaSelectionStep";
-import PublicProfileCreationStep from "@/app/welcome/steps/PublicProfileCreationStep";
-import ReceiveDonationsStep from "@/app/welcome/steps/ReceiveDonationsStep";
-import StorePaymentsStep from "@/app/welcome/steps/StorePaymentsStep";
-import StoreProfileStep from "@/app/welcome/steps/StoreProfileStep";
-import UserInfoStep from "@/app/welcome/steps/UserInfoStep";
+import {
+  AddFundsStep,
+  DonationPreferencesStep,
+  FinalWelcomeStep,
+  OnboardingIntroStep,
+  PersonaSelectionStep,
+  PublicProfileCreationStep,
+  ReceiveDonationsStep,
+  StorePaymentsStep,
+  StoreProfileStep,
+  UserInfoStep,
+} from "@/app/welcome/steps";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/Card";
+import { cn } from "@/lib/classnames";
 import { TCubidData } from "@/types/cubid";
-import classNames from "classnames";
 
 const stepHeadings = ["Introduction", "Complete Your Profile", "Choose Your Persona", "Additional Details", "Finalize Setup", "You're All Set!"];
 const initialFormData = {
@@ -49,7 +51,7 @@ const WelcomeFlow: React.FC = () => {
 
   const [isNextEnabled, setIsNextEnabled] = useState<boolean>(true);
 
-  const mainClass = classNames("flex-grow flex flex-col items-center justify-center overflow-auto");
+  const mainClass = cn("flex-grow flex flex-col items-center justify-center overflow-auto");
 
   const saveToLocalStorage = () => {
     localStorage.setItem("welcomeFlowData", JSON.stringify(userFormData));
@@ -219,18 +221,9 @@ const WelcomeFlow: React.FC = () => {
         </CardContent>
 
         <CardFooter>
-          {userFormData.current_step > 1 && userFormData.current_step < 6 && (
-            <Button onClick={previousStep} className="text-indigo-600">
-              Back
-            </Button>
-          )}
+          {userFormData.current_step > 1 && userFormData.current_step < 6 && <Button onClick={previousStep}>Back</Button>}
           {userFormData.current_step < 6 && (
-            <Button
-              onClick={nextStep}
-              className={`text-indigo-600 ${!isNextEnabled && "opacity-50 cursor-not-allowed"}`}
-              disabled={!isNextEnabled}
-              style={{ marginLeft: "auto" }}
-            >
+            <Button onClick={nextStep} disabled={!isNextEnabled} style={{ marginLeft: "auto" }}>
               Continue
             </Button>
           )}

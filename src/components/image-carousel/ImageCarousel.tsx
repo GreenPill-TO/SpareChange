@@ -30,7 +30,7 @@ function ImageCarousel({ images }: ImageCarouselProps) {
   };
 
   return (
-    <div className="relative rounded-xl bg-slate-100 dark:bg-gray-600">
+    <div className="relative rounded-xl">
       <div className="w-full relative overflow-hidden">
         <div
           className="relative w-full flex transition-transform duration-500 ease-in-out"
@@ -57,10 +57,7 @@ function ImageCarousel({ images }: ImageCarouselProps) {
         </div>
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
           {images.map((_, index) => (
-            <div
-              key={index}
-              className={`h-2 w-2 rounded-full ${index === currentSlide ? "bg-blue-500" : "bg-gray-300"}`}
-            ></div>
+            <div key={index} className={`h-2 w-2 rounded-full ${index === currentSlide ? "bg-blue-500" : "bg-gray-300"}`}></div>
           ))}
         </div>
       </div>

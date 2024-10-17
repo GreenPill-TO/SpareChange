@@ -1,4 +1,4 @@
-import { Avatar, AvatarImage } from "@/components/ui/Avatar";
+import { Avatar } from "@/components/ui/Avatar";
 import React, { useState } from "react";
 
 interface ImageUploadProps {
@@ -23,11 +23,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ label, name, onImageUpload })
 
   return (
     <div className="image-upload">
-      {preview && (
-        <Avatar className="my-4">
-          <AvatarImage src={preview} />
-        </Avatar>
-      )}
+      {preview && <Avatar className="my-4" src={preview} alt="image-preview" />}
       <label htmlFor={name} className="block text-sm font-medium text-gray-700">
         {label}
       </label>

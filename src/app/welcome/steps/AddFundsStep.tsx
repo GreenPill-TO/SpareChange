@@ -1,5 +1,5 @@
-import AmountField from "@/components/form/form-fields/AmountField";
-import PaymentForm from "@/components/form/form-fields/PaymentForm";
+import PaymentForm from "@/components/form/PaymentForm";
+import InputField from "@/components/ui/InputField";
 import React, { useEffect } from "react";
 
 interface AddFundsStepProps {
@@ -10,7 +10,7 @@ interface AddFundsStepProps {
   nextStep: () => void;
 }
 
-const AddFundsStep: React.FC<AddFundsStepProps> = ({
+export const AddFundsStep: React.FC<AddFundsStepProps> = ({
   preferredDonationAmount,
   setPreferredDonationAmount,
   handleSubmitPayment,
@@ -25,15 +25,14 @@ const AddFundsStep: React.FC<AddFundsStepProps> = ({
   return (
     <div className="add-funds-step">
       <h2 className="text-2xl font-bold">Fund Your Account</h2>
-      <AmountField
+      <InputField
         label="Amount to Add"
         name="amountToAdd"
         value={preferredDonationAmount}
+        type="number"
         onChange={(e) => setPreferredDonationAmount(parseFloat(e.currentTarget.value))}
       />
       <PaymentForm onSubmit={handleSubmitPayment} />
     </div>
   );
 };
-
-export default AddFundsStep;

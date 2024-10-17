@@ -4,7 +4,7 @@
 import { useAuth } from "@/api/hooks/useAuth";
 import { Footer } from "@/components/footer";
 import Navbar from "@/components/navbar";
-import classNames from "classnames";
+import { cn } from "@/lib/classnames";
 import { GeistSans } from "geist/font/sans";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -15,7 +15,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const { isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
 
-  const bodyClass = classNames("min-h-screen", "flex flex-col justify-between", "bg-background", "text-primary text-sm font-inter");
+  const bodyClass = cn("min-h-screen", "flex flex-col justify-between", "bg-background", "text-primary text-sm font-inter");
 
   useEffect(() => {
     // Replace this with your actual authentication logic
@@ -30,7 +30,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       {!isLoading ? (
         <section className={bodyClass}>
           <Navbar />
-          <div className={classNames("flex-grow flex flex-col pt-16", "bg-secondary")}>{children}</div>
+          <div className={cn("flex-grow flex flex-col pt-16", "bg-secondary")}>{children}</div>
           <Footer />
           <ToastContainer autoClose={1000} transition={Flip} theme={"colored"} />
         </section>

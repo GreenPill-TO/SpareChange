@@ -1,5 +1,5 @@
-import IconList from "@/components/form/form-fields/IconList";
 import { Button } from "@/components/ui/Button";
+import IconList from "@/components/ui/IconList";
 import InfoBox from "@/components/ui/InfoBox";
 import React from "react";
 import { FaHandHoldingHeart, FaHeart, FaRecycle, FaShoppingCart } from "react-icons/fa";
@@ -8,7 +8,7 @@ interface OnboardingIntroStepProps {
   nextStep: () => void;
 }
 
-const OnboardingIntroStep: React.FC<OnboardingIntroStepProps> = ({ nextStep }) => {
+export const OnboardingIntroStep: React.FC<OnboardingIntroStepProps> = ({ nextStep }) => {
   return (
     <div className={`p-6 space-y-6`}>
       <h2 className="text-2xl font-bold">Welcome to SpareChange!</h2>
@@ -32,5 +32,3 @@ const OnboardingIntroStep: React.FC<OnboardingIntroStepProps> = ({ nextStep }) =
     </div>
   );
 };
-
-export default OnboardingIntroStep;

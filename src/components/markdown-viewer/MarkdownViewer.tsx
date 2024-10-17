@@ -24,17 +24,17 @@ export const MarkdownViewer = ({ filePath }: MarkdownViewerProps) => {
   }, [filePath]);
 
   return (
-    <div className={`prose mx-auto p-4 rounded dark:bg-black dark:text-white bg-white text-black`}>
+    <div className={`prose mx-auto p-4 rounded`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw, rehypeHighlight]}
         components={{
-          h1: (props) => <h1 {...props} className={`dark:text-white dark:font-bold text-black`} />,
-          h2: (props) => <h2 {...props} className={`dark:text-white dark:font-semibold text-black`} />,
-          h3: (props) => <h3 {...props} className={`dark:text-white dark:font-semibold text-black`} />,
+          h1: (props) => <h1 {...props} />,
+          h2: (props) => <h2 {...props} />,
+          h3: (props) => <h3 {...props} />,
           // Add similar customizations for other heading levels if needed
-          a: (props) => <a {...props} className={`dark:text-blue-400 dark:underline text-blue-600`} />,
-          strong: (props) => <strong {...props} className={`dark:text-white dark:font-bold font-bold`} />,
+          a: (props) => <a {...props} className={`text-blue`} />,
+          strong: (props) => <strong {...props} className={`font-bold`} />,
         }}
       >
         {content}

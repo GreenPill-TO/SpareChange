@@ -1,9 +1,9 @@
 import { useSendPasscodeMutation, useVerifyPasscodeMutation } from "@/api/mutations/usePasscode";
+import OTPForm from "@/components/form/OTPForm";
+import ImageCarousel from "@/components/image-carousel/ImageCarousel";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import OTPForm from "../form/OTPForm";
-import ImageCarousel from "../image-carousel/ImageCarousel";
 
 import { createCubidUser } from "@/api/services/cubidService";
 import { createNewUser, fetchUserByContact } from "@/api/services/supabaseService";

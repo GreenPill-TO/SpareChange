@@ -1,5 +1,5 @@
 import { usePersonas } from "@/api/hooks/usePersonas";
-import classNames from "classnames";
+import { cn } from "@/lib/classnames";
 import React, { useEffect } from "react";
 
 interface PersonaSelectionStepProps {
@@ -8,7 +8,7 @@ interface PersonaSelectionStepProps {
   setIsNextEnabled: (enabled: boolean) => void;
 }
 
-const PersonaSelectionStep: React.FC<PersonaSelectionStepProps> = ({ persona, handlePersonaSelection, setIsNextEnabled }) => {
+export const PersonaSelectionStep: React.FC<PersonaSelectionStepProps> = ({ persona, handlePersonaSelection, setIsNextEnabled }) => {
   const { personas, error, isLoading } = usePersonas();
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const PersonaSelectionStep: React.FC<PersonaSelectionStepProps> = ({ persona, ha
   }, [persona, setIsNextEnabled]);
 
   return (
-    <div className={classNames("persona-selection-step", "dark:bg-gray-900 dark:text-white", "bg-white text-gray-900", "p-6 space-y-6")}>
+    <div className={cn("p-6 space-y-6")}>
       <h2 className="text-2xl font-bold mb-4">Choose your main reason for using SpareChange</h2>
       <div className="space-y-4">
         {personas &&
@@ -42,5 +42,3 @@ const PersonaSelectionStep: React.FC<PersonaSelectionStepProps> = ({ persona, ha
     </div>
   );
 };
-
-export default PersonaSelectionStep;

@@ -1,6 +1,6 @@
 "use client";
 
-import classNames from "classnames";
+import { cn } from "@/lib/classnames";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -14,12 +14,12 @@ export default function NavLink({ link, title, optionalClass = "" }: TNavLinkPro
 
   return (
     <Link
-      className={classNames(
+      className={cn(
         "link px-3 font-semibold",
         "my-4 mr-2 lg:m-0",
         "no-underline",
         {
-          "text-main-hover dark:text-main-hover-dark": pathname === link,
+          "text-primary-hover": pathname === link,
         },
         optionalClass
       )}

@@ -1,5 +1,5 @@
 import { useAuth } from "@/api/hooks/useAuth";
-import TextField from "@/components/form/form-fields/TextField";
+import InputField from "@/components/ui/InputField";
 import React, { useEffect, useMemo } from "react";
 
 interface UserInfoStepProps {
@@ -14,7 +14,7 @@ interface UserInfoStepProps {
   setIsNextEnabled: (enabled: boolean) => void;
 }
 
-const UserInfoStep: React.FC<UserInfoStepProps> = ({
+export const UserInfoStep: React.FC<UserInfoStepProps> = ({
   fullName,
   username,
   phoneNumber,
@@ -81,15 +81,13 @@ const UserInfoStep: React.FC<UserInfoStepProps> = ({
       <p className="mb-4 text-gray-600">
         Your full name will only be visible to users who have mutually connected with you. Your username will be publicly visible to all users.
       </p>
-      <TextField label="Full Name" name="fullName" value={fullName} onChange={handleFullNameChange} />
-      <TextField label="Username" name="username" value={username} onChange={handleUserNameChange} />
+      <InputField label="Full Name" name="fullName" value={fullName} onChange={handleFullNameChange} />
+      <InputField label="Username" name="username" value={username} onChange={handleUserNameChange} />
       {authMethod === "phone" ? (
-        <TextField label="Phone Number" name="phoneNumber" value={phoneNumber} onChange={handlePhoneNumberChange} />
+        <InputField label="Phone Number" name="phoneNumber" value={phoneNumber} onChange={handlePhoneNumberChange} />
       ) : (
-        <TextField label="Email" name="email" value={email} onChange={handleEmailChange} />
+        <InputField label="Email" name="email" value={email} onChange={handleEmailChange} />
       )}
     </div>
   );
 };
-
-export default UserInfoStep;

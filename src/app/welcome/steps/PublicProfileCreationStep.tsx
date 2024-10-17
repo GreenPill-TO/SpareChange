@@ -1,6 +1,5 @@
-import AddressField from "@/components/form/form-fields/AddressField";
-import ImageUpload from "@/components/form/form-fields/ImageUpload";
-import TextArea from "@/components/form/form-fields/TextArea";
+import ImageUpload from "@/components/ui/ImageUpload";
+import InputField from "@/components/ui/InputField";
 import React, { useEffect } from "react";
 
 interface PublicProfileCreationStepProps {
@@ -14,7 +13,7 @@ interface PublicProfileCreationStepProps {
   nextStep: () => void;
 }
 
-const PublicProfileCreationStep: React.FC<PublicProfileCreationStepProps> = ({
+export const PublicProfileCreationStep: React.FC<PublicProfileCreationStepProps> = ({
   bio,
   address,
   profileImage,
@@ -33,10 +32,8 @@ const PublicProfileCreationStep: React.FC<PublicProfileCreationStepProps> = ({
     <div className="public-profile-creation-step">
       <h2 className="text-2xl font-bold">Create Your Public Profile</h2>
       <ImageUpload label="Profile Picture" name="profilePicture" onImageUpload={handleImageUpload} />
-      <TextArea label="Bio or Introduction" name="bio" value={bio} onChange={(e) => setBio(e.target.value)} />
-      <AddressField label="Location (Optional)" name="location" value={address} onChange={(e) => setAddress(e.target.value)} />
+      <InputField type="textarea" label="Bio or Introduction" name="bio" value={bio} onChange={(e) => setBio(e.target.value)} />
+      <InputField label="Location (Optional)" name="location" value={address} onChange={(e) => setAddress(e.target.value)} />
     </div>
   );
 };
-
-export default PublicProfileCreationStep;

@@ -1,16 +1,17 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
+import InputField from "@/components/ui/InputField";
 import { Label } from "@/components/ui/Label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
+import { Radio } from "@/components/ui/Radio";
 import { Switch } from "@/components/ui/Switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { Camera, CreditCard, DollarSign, QrCode, Send, Share2, User, Users } from "lucide-react";
+import { TabContent, Tabs, TabTrigger } from "@/components/ui/Tabs";
 import { useState } from "react";
+import { LuCamera, LuCreditCard, LuDollarSign, LuQrCode, LuSend, LuShare2, LuUsers } from "react-icons/lu";
 import { toast } from "react-toastify";
 import { Area, AreaChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
@@ -36,6 +37,18 @@ const charityContributionData = [
   { date: "2023-07-01", TheShelter: 20, TheFoodBank: 5 },
   { date: "2023-08-01", TheShelter: 18, TheFoodBank: 12 },
   { date: "2023-09-01", TheShelter: 22, TheFoodBank: 18 },
+];
+
+const charities = [
+  { value: "The FoodBank", label: "The FoodBank", id: "charity1" },
+  { value: "The Shelter", label: "The Shelter", id: "charity2" },
+  { value: "Save the Trees", label: "Save the Trees", id: "charity3" },
+];
+
+const contacts = [
+  { value: "Alice", label: "Alice", id: "contact1" },
+  { value: "Bob", label: "Bob", id: "contact2" },
+  { value: "Charlie", label: "Charlie", id: "contact3" },
 ];
 
 export function MobileWalletDashboardComponent() {
@@ -101,7 +114,7 @@ export function MobileWalletDashboardComponent() {
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="ghost" size="icon">
-                <Camera className="h-6 w-6" />
+                <LuCamera className="h-6 w-6" />
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -114,12 +127,7 @@ export function MobileWalletDashboardComponent() {
           </Dialog>
           <Dialog>
             <DialogTrigger asChild>
-              <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                <AvatarFallback>
-                  <User className="h-6 w-6" />
-                </AvatarFallback>
-              </Avatar>
+              <Avatar src="https://github.com/shadcn.png" alt="@shadcn" />
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -128,12 +136,7 @@ export function MobileWalletDashboardComponent() {
               </DialogHeader>
               <div className="space-y-4">
                 <div className="flex items-center space-x-4 mb-4">
-                  <Avatar className="w-20 h-20">
-                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                    <AvatarFallback>
-                      <User className="h-12 w-12" />
-                    </AvatarFallback>
-                  </Avatar>
+                  <Avatar className="w-20 h-20" src="https://github.com/shadcn.png" alt="@shadcn" />
                   <Button variant="link" className="p-0 h-auto" onClick={() => console.log("Change avatar")}>
                     Change avatar
                   </Button>
@@ -174,20 +177,19 @@ export function MobileWalletDashboardComponent() {
                       <DialogTitle>Change Default Charity</DialogTitle>
                       <DialogDescription>Select a new default charity for your contributions.</DialogDescription>
                     </DialogHeader>
-                    <RadioGroup defaultValue={selectedCharity} onValueChange={setSelectedCharity}>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="The FoodBank" id="charity1" />
-                        <Label htmlFor="charity1">The FoodBank</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="The Shelter" id="charity2" />
-                        <Label htmlFor="charity2">The Shelter</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="Save the Trees" id="charity3" />
-                        <Label htmlFor="charity3">Save the Trees</Label>
-                      </div>
-                    </RadioGroup>
+                    {charities.map((charity) => {
+                      return (
+                        <Radio
+                          name="charity-selection"
+                          key={charity.id}
+                          label={charity.label}
+                          value={charity.value}
+                          onValueChange={setSelectedCharity}
+                          id={charity.id}
+                        />
+                      );
+                    })}
+
                     <div className="flex justify-end space-x-2 mt-4">
                       <Button variant="outline" onClick={() => setSelectedCharity("The FoodBank")}>
                         Cancel
@@ -214,7 +216,7 @@ export function MobileWalletDashboardComponent() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-              <QrCode className="mx-auto h-32 w-32" />
+              <LuQrCode className="mx-auto h-32 w-32" />
               <p className="mt-2 qr-code-text">Your default QR code (unspecified amount)</p>
             </div>
             <div className="space-y-2">
@@ -237,7 +239,7 @@ export function MobileWalletDashboardComponent() {
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className="flex-1">
-                    <Users className="mr-2 h-4 w-4" /> Request from Contact
+                    <LuUsers className="mr-2 h-4 w-4" /> Request from Contact
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
@@ -247,22 +249,19 @@ export function MobileWalletDashboardComponent() {
                   </DialogHeader>
                   <div className="space-y-4">
                     <Input placeholder="Search contacts..." />
-                    <RadioGroup onValueChange={setSelectedContact}>
-                      <div className="space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="Alice" id="contact1" />
-                          <Label htmlFor="contact1">Alice</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="Bob" id="contact2" />
-                          <Label htmlFor="contact2">Bob</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="Charlie" id="contact3" />
-                          <Label htmlFor="contact3">Charlie</Label>
-                        </div>
-                      </div>
-                    </RadioGroup>
+                    {contacts.map((contact) => {
+                      return (
+                        <Radio
+                          name="contact-selection"
+                          key={contact.id}
+                          label={contact.label}
+                          value={contact.value}
+                          onValueChange={setSelectedContact}
+                          id={contact.id}
+                        />
+                      );
+                    })}
+
                     <Button
                       className="w-full"
                       disabled={!selectedContact}
@@ -276,7 +275,7 @@ export function MobileWalletDashboardComponent() {
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className="flex-1">
-                    <Share2 className="mr-2 h-4 w-4" /> Share
+                    <LuShare2 className="mr-2 h-4 w-4" /> Share
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
@@ -321,7 +320,7 @@ export function MobileWalletDashboardComponent() {
             <Dialog>
               <DialogTrigger asChild>
                 <Button className="w-full">
-                  <Camera className="mr-2 h-4 w-4" /> Scan QR to Pay
+                  <LuCamera className="mr-2 h-4 w-4" /> Scan QR to Pay
                 </Button>
               </DialogTrigger>
               <DialogContent>
@@ -349,7 +348,7 @@ export function MobileWalletDashboardComponent() {
             <Dialog>
               <DialogTrigger asChild>
                 <Button className="w-full">
-                  <Send className="mr-2 h-4 w-4" /> Send to Contact
+                  <LuSend className="mr-2 h-4 w-4" /> Send to Contact
                 </Button>
               </DialogTrigger>
               <DialogContent>
@@ -387,14 +386,9 @@ export function MobileWalletDashboardComponent() {
             <CardTitle>My Account</CardTitle>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="graph" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="graph">Graph</TabsTrigger>
-                <TabsTrigger value="balance">Balance</TabsTrigger>
-                <TabsTrigger value="transactions">Transactions</TabsTrigger>
-                <TabsTrigger value="charity">Charity</TabsTrigger>
-              </TabsList>
-              <TabsContent value="graph">
+            <Tabs className="w-full" variant="bordered">
+              <TabTrigger name="tab_insight" ariaLabel="Graph" defaultChecked />
+              <TabContent>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={balanceHistory}>
@@ -406,15 +400,17 @@ export function MobileWalletDashboardComponent() {
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
-              </TabsContent>
-              <TabsContent value="balance">
+              </TabContent>
+              <TabTrigger name="tab_insight" ariaLabel="Balance" />
+              <TabContent>
                 <div className="text-center">
                   <h2 className="text-2xl font-bold mb-2">Your Balance</h2>
                   <p className="text-4xl font-bold">{formatNumber(balance.toString(), false)}</p>
                   <p className="text-xl">{formatNumber(convertToCad(balance), true)}</p>
                 </div>
-              </TabsContent>
-              <TabsContent value="transactions">
+              </TabContent>
+              <TabTrigger name="tab_insight" ariaLabel="Transactions" />
+              <TabContent>
                 <div className="flex items-center space-x-2 mb-4">
                   <Switch id="currency-toggle" checked={showAmountInCad} onCheckedChange={setShowAmountInCad} />
                   <Label htmlFor="currency-toggle">Show amounts in {showAmountInCad ? "CAD" : "TCOIN"}</Label>
@@ -444,8 +440,9 @@ export function MobileWalletDashboardComponent() {
                     </li>
                   ))}
                 </ul>
-              </TabsContent>
-              <TabsContent value="charity">
+              </TabContent>
+              <TabTrigger name="tab_insight" ariaLabel="Charity" />
+              <TabContent>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={charityContributionData}>
@@ -458,7 +455,7 @@ export function MobileWalletDashboardComponent() {
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
-              </TabsContent>
+              </TabContent>
             </Tabs>
           </CardContent>
         </Card>
@@ -472,7 +469,7 @@ export function MobileWalletDashboardComponent() {
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className="w-full">
-                    <CreditCard className="mr-2 h-4 w-4" /> Top Up with Interac eTransfer
+                    <LuCreditCard className="mr-2 h-4 w-4" /> Top Up with Interac eTransfer
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
@@ -497,7 +494,7 @@ export function MobileWalletDashboardComponent() {
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className="w-full">
-                    <DollarSign className="mr-2 h-4 w-4" /> Convert TCOIN to CAD and Off-ramp
+                    <LuDollarSign className="mr-2 h-4 w-4" /> Convert TCOIN to CAD and Off-ramp
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
@@ -506,7 +503,13 @@ export function MobileWalletDashboardComponent() {
                     <DialogDescription>Convert your TCOIN to CAD and transfer to your bank account.</DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">
-                    <Input placeholder="Amount in TCOIN" />
+                    <InputField
+                      label="Preferred Donation Amount (TCOIN)"
+                      name="preferredDonationAmount"
+                      value=""
+                      placeholder="Amount in TCOIN"
+                      onChange={(e) => {}}
+                    />
                     <p>Estimated CAD: $0.00</p>
                     <Input placeholder="Interac eTransfer email or phone" />
                     <p className="text-sm text-gray-500">Note: The transfer will be completed within the next 24 hours.</p>

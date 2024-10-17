@@ -6,7 +6,7 @@ interface StorePaymentsStepProps {
   nextStep: () => void;
 }
 
-const StorePaymentsStep: React.FC<StorePaymentsStepProps> = ({ setIsNextEnabled }) => {
+export const StorePaymentsStep: React.FC<StorePaymentsStepProps> = ({ setIsNextEnabled }) => {
   useEffect(() => {
     // Enable the "Next" button as there is no input to validate
     setIsNextEnabled(true);
@@ -22,5 +22,3 @@ const StorePaymentsStep: React.FC<StorePaymentsStepProps> = ({ setIsNextEnabled 
     </div>
   );
 };
-
-export default StorePaymentsStep;

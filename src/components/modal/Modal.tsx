@@ -1,7 +1,7 @@
 import { useModal } from "@/contexts/ModalContext";
-import { XMarkIcon } from "@heroicons/react/24/solid";
-import classNames from "classnames";
+import { cn } from "@/lib/classnames";
 import React, { useEffect, useRef } from "react";
+import { LuX } from "react-icons/lu";
 
 interface ModalProps {
   onClose: () => void;
@@ -37,15 +37,11 @@ const Modal: React.FC<ModalProps> = ({ onClose, children, closeOnOutside = true,
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 dark:bg-opacity-50 flex">
       <div
-        className={classNames(
-          "relative p-4 bg-white dark:bg-black m-auto flex-col flex rounded-lg shadow-lg",
-          "max-h-screen4/5 overflow-auto",
-          modalWidthClass
-        )}
+        className={cn("relative p-4 bg-card m-auto flex-col flex rounded-lg shadow-lg", "max-h-screen4/5 overflow-auto", modalWidthClass)}
         ref={modalRef}
       >
         <button onClick={onClose} className="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
-          <XMarkIcon width={24} height={24} />
+          <LuX width={24} height={24} />
         </button>
         {children}
       </div>

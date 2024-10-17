@@ -1,14 +1,14 @@
 "use client";
 
 import useDarkMode from "@/hooks/useDarkMode";
-import classNames from "classnames";
 import { ReactNode } from "react";
+import { cn } from "./classnames";
 
 export default function DarkModeProvider({ children }: { children: ReactNode }) {
   const { isDarkMode } = useDarkMode();
 
   return (
-    <div id="main-content" className={classNames({ dark: isDarkMode }, "w-screen h-screen bg-white dark:bg-black")}>
+    <div id="main-content" className={cn({ dark: isDarkMode }, "w-screen h-screen")}>
       {children}
     </div>
   );

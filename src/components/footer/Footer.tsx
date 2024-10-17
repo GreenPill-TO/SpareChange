@@ -1,6 +1,6 @@
 import { MarkdownViewer } from "@/components/markdown-viewer";
 import { useModal } from "@/contexts/ModalContext";
-import classNames from "classnames";
+import { cn } from "@/lib/classnames";
 
 export function Footer() {
   const { openModal } = useModal();
@@ -10,7 +10,7 @@ export function Footer() {
   };
 
   return (
-    <footer className={classNames("py-6 w-full", "bg-background", "shadow-top")}>
+    <footer className={cn("py-6 w-full", "bg-background", "shadow-top")}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           <div>

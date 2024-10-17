@@ -1,7 +1,9 @@
 import classNames from "classnames";
 import React from "react";
+import { Input } from "./Input";
+import { Label } from "./Label";
 
-interface TextFieldProps {
+interface InputFieldProps {
   label: string;
   name: string;
   value: string | number;
@@ -12,7 +14,7 @@ interface TextFieldProps {
   disabled?: boolean;
 }
 
-const TextField: React.FC<TextFieldProps> = ({
+const InputField: React.FC<InputFieldProps> = ({
   label,
   name,
   value,
@@ -30,10 +32,8 @@ const TextField: React.FC<TextFieldProps> = ({
 
   return (
     <div className="text-field mb-4">
-      <label htmlFor={name} className={`block text-sm font-medium dark:text-white text-gray-700`}>
-        {label}
-      </label>
-      <input
+      <Label htmlFor={name}>{label}</Label>
+      <Input
         id={name}
         name={name}
         type={type}
@@ -49,4 +49,4 @@ const TextField: React.FC<TextFieldProps> = ({
   );
 };
 
-export default TextField;
+export default InputField;
