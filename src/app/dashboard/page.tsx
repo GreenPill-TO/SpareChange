@@ -2,7 +2,7 @@
 import { useAuth } from "@TCoin/api/hooks/useAuth";
 import classNames from "classnames";
 import { useMemo } from "react";
-import { PanholderScreen } from "./screens";
+import { DonorScreen, PanhandlerScreen, WalletScreen } from "./screens";
 
 export default function Dashboard() {
   const { userData, error, isLoadingUser } = useAuth();
@@ -14,9 +14,11 @@ export default function Dashboard() {
 
     switch (userData?.cubidData?.persona) {
       case "ph":
-        return <PanholderScreen />;
+        return <PanhandlerScreen />;
+      case "dr":
+        return <DonorScreen />;
       default:
-        return <div />;
+        return <WalletScreen />;
     }
   }, [userData]);
 

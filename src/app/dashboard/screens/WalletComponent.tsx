@@ -1,23 +1,18 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/dashboard/ui/card"
-import { Input } from "@/components/dashboard/ui/input"
-import { Button } from "@/components/dashboard/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/dashboard/ui/avatar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/dashboard/ui/tabs"
+import { Card, CardContent, CardHeader, CardTitle } from "@TCoin/components/walletUI/card"
+import { Input } from "@TCoin/components/walletUI/input"
+import { Button } from "@TCoin/components/walletUI/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@TCoin/components/walletUI/avatar"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@TCoin/components/walletUI/tabs"
 import { Camera, User, QrCode, Share2, Send, Users, CreditCard, DollarSign } from 'lucide-react'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { Switch } from "@/components/dashboard/ui/switch"
-import { Label } from "@/components/dashboard/ui/label"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/dashboard/ui/dialog"
-
-// Simulated data
-const charityData = {
-  personalContribution: 50,
-  allUsersToCharity: 600,
-  allUsersToAllCharities: 7000
-}
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts'
+import { Switch } from "@TCoin/components/walletUI/switch"
+import { Label } from "@TCoin/components/walletUI/label"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@TCoin/components/walletUI/dialog"
+import { RadioGroup, RadioGroupItem } from "@TCoin/components/walletUI/radio-group"
+import { toast } from "react-toastify"
 
 const balanceHistory = [
   { date: '2023-06-01', balance: 800 },
@@ -35,37 +30,62 @@ const recentTransactions = [
   { id: 5, type: 'Sent', amount: 30, to: 'Coffee Shop', date: '2023-07-26' },
 ]
 
+const charityContributionData = [
+  { date: '2023-05-01', TheShelter: 10, TheFoodBank: 0 },
+  { date: '2023-06-01', TheShelter: 15, TheFoodBank: 0 },
+  { date: '2023-07-01', TheShelter: 20, TheFoodBank: 5 },
+  { date: '2023-08-01', TheShelter: 18, TheFoodBank: 12 },
+  { date: '2023-09-01', TheShelter: 22, TheFoodBank: 18 },
+]
+
 export function MobileWalletDashboardComponent() {
-  const [balance, setBalance] = useState(1000) // Initial balance in TCOIN
+  const [balance, setBalance] = useState(1000)
   const [qrTcoinAmount, setQrTcoinAmount] = useState('')
   const [qrCadAmount, setQrCadAmount] = useState('')
   const [tcoinAmount, setTcoinAmount] = useState('')
   const [cadAmount, setCadAmount] = useState('')
   const [showAmountInCad, setShowAmountInCad] = useState(false)
-  const exchangeRate = 3.30 // 1 TCOIN = $3.30 CAD
+  const [selectedCharity, setSelectedCharity] = useState('The FoodBank')
+  const [selectedContact, setSelectedContact] = useState('')
+  const exchangeRate = 3.30
+
+  const [charityData, setCharityData] = useState({
+    personalContribution: 50,
+    allUsersToCharity: 600,
+    allUsersToAllCharities: 7000
+  })
 
   const convertToCad = (tcoin: number) => (tcoin * exchangeRate).toFixed(2)
   const convertToTcoin = (cad: number) => (cad / exchangeRate).toFixed(2)
 
+  const formatNumber = (value: string, isCad: boolean) => {
+    const num = parseFloat(value.replace(/[^\d.]/g, ''))
+    if (isNaN(num)) return isCad ? '$0.00' : '0.00 TCOIN'
+    const formatted = num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    return isCad ? `$${formatted}` : `${formatted} TCOIN`
+  }
+
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, setCadAmount: React.Dispatch<React.SetStateAction<string>>, setTcoinAmount: React.Dispatch<React.SetStateAction<string>>) => {
     const { name, value } = e.target
+    const numericValue = value.replace(/[^\d.]/g, '')
     if (name === 'tcoin') {
-      setTcoinAmount(value)
-      setCadAmount(convertToCad(Number(value)))
+      setTcoinAmount(formatNumber(numericValue, false))
+      setCadAmount(formatNumber(convertToCad(parseFloat(numericValue)), true))
     } else {
-      setCadAmount(value)
-      setTcoinAmount(convertToTcoin(Number(value)))
+      setCadAmount(formatNumber(numericValue, true))
+      setTcoinAmount(formatNumber(convertToTcoin(parseFloat(numericValue)), false))
     }
   }
 
   const handleQrAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
+    const numericValue = value.replace(/[^\d.]/g, '')
     if (name === 'qrTcoin') {
-      setQrTcoinAmount(value)
-      setQrCadAmount(convertToCad(Number(value)))
+      setQrTcoinAmount(formatNumber(numericValue, false))
+      setQrCadAmount(formatNumber(convertToCad(parseFloat(numericValue)), true))
     } else {
-      setQrCadAmount(value)
-      setQrTcoinAmount(convertToTcoin(Number(value)))
+      setQrCadAmount(formatNumber(numericValue, true))
+      setQrTcoinAmount(formatNumber(convertToTcoin(parseFloat(numericValue)), false))
     }
   }
 
@@ -131,9 +151,42 @@ export function MobileWalletDashboardComponent() {
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              <p>My default charity: <strong>The FoodBank</strong> <Button variant="link" className="p-0 h-auto font-normal" onClick={() => console.log('Change charity')}>change</Button></p>
-              <p>My contribution to The FoodBank: {charityData.personalContribution} TCOIN</p>
-              <p>All users to The FoodBank: {charityData.allUsersToCharity} TCOIN</p>
+              <p>
+                My default charity: <strong>{selectedCharity}</strong>{' '}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="link" className="p-0 h-auto font-normal text-blue-500">change</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Change Default Charity</DialogTitle>
+                      <DialogDescription>
+                        Select a new default charity for your contributions.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <RadioGroup defaultValue={selectedCharity} onValueChange={setSelectedCharity}>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="The FoodBank" id="charity1" />
+                        <Label htmlFor="charity1">The FoodBank</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="The Shelter" id="charity2" />
+                        <Label htmlFor="charity2">The Shelter</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="Save the Trees" id="charity3" />
+                        <Label htmlFor="charity3">Save the Trees</Label>
+                      </div>
+                    </RadioGroup>
+                    <div className="flex justify-end space-x-2 mt-4">
+                      <Button variant="outline" onClick={() => setSelectedCharity('The FoodBank')}>Cancel</Button>
+                      <Button disabled={selectedCharity === 'The FoodBank'}>Set as default</Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </p>
+              <p>My contribution to {selectedCharity}: {charityData.personalContribution} TCOIN</p>
+              <p>All users to {selectedCharity}: {charityData.allUsersToCharity} TCOIN</p>
               <p>All users to all charities: {charityData.allUsersToAllCharities} TCOIN</p>
             </div>
           </CardContent>
@@ -162,10 +215,10 @@ export function MobileWalletDashboardComponent() {
                 placeholder="Enter CAD amount" 
               />
               <Button onClick={() => {
-                console.log('Update QR for', qrTcoinAmount, 'TCOIN');
+                console.log('Update QR for', qrTcoinAmount);
                 const qrTextElement = document.querySelector('.qr-code-text');
                 if (qrTextElement) {
-                  qrTextElement.textContent = `QR code for ${qrTcoinAmount} TCOIN`;
+                  qrTextElement.textContent = `QR code for ${qrTcoinAmount}`;
                 }
               }} className="w-full">
                 Update QR Code
@@ -187,11 +240,29 @@ export function MobileWalletDashboardComponent() {
                   </DialogHeader>
                   <div className="space-y-4">
                     <Input placeholder="Search contacts..." />
-                    <ul className="space-y-2">
-                      <li><Button variant="ghost" className="w-full justify-start">Alice</Button></li>
-                      <li><Button variant="ghost" className="w-full justify-start">Bob</Button></li>
-                      <li><Button variant="ghost" className="w-full justify-start">Charlie</Button></li>
-                    </ul>
+                    <RadioGroup onValueChange={setSelectedContact}>
+                      <div className="space-y-2">
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="Alice" id="contact1" />
+                          <Label htmlFor="contact1">Alice</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="Bob" id="contact2" />
+                          <Label htmlFor="contact2">Bob</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="Charlie" id="contact3" />
+                          <Label htmlFor="contact3">Charlie</Label>
+                        </div>
+                      </div>
+                    </RadioGroup>
+                    <Button 
+                      className="w-full" 
+                      disabled={!selectedContact}
+                      onClick={() => console.log(`Requesting ${qrTcoinAmount} from ${selectedContact}`)}
+                    >
+                      Request {qrTcoinAmount}
+                    </Button>
                   </div>
                 </DialogContent>
               </Dialog>
@@ -211,7 +282,22 @@ export function MobileWalletDashboardComponent() {
                   <div className="space-y-4">
                     <Button className="w-full">Share via Email</Button>
                     <Button className="w-full">Share via SMS</Button>
-                    <Button className="w-full">Copy Link</Button>
+                    <Button className="w-full" onClick={() => {
+                      navigator.clipboard.writeText('https://example.com/qr-code-link')
+                        .then(() => {
+                          toast.success("The QR code link has been copied to your clipboard.");
+                          // toast({
+                            // title: "Link copied",  // Uncomment this line to show a title, but requires import of useToast instead of react-toastify
+                            //description: "The QR code link has been copied to your clipboard.", // Uncomment this line to show a description
+                          // })
+                        })
+                        .catch((err) => {
+                          console.error('Failed to copy: ', err)
+                        })
+                    
+                    }}>
+                      Copy Link
+                    </Button>
                   </div>
                 </DialogContent>
               </Dialog>
@@ -288,10 +374,11 @@ export function MobileWalletDashboardComponent() {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="graph" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="graph">Graph</TabsTrigger>
                 <TabsTrigger value="balance">Balance</TabsTrigger>
                 <TabsTrigger value="transactions">Transactions</TabsTrigger>
+                <TabsTrigger value="charity">Charity</TabsTrigger>
               </TabsList>
               <TabsContent value="graph">
                 <div className="h-64">
@@ -309,8 +396,8 @@ export function MobileWalletDashboardComponent() {
               <TabsContent value="balance">
                 <div className="text-center">
                   <h2 className="text-2xl font-bold mb-2">Your Balance</h2>
-                  <p className="text-4xl font-bold">{balance} TCOIN</p>
-                  <p className="text-xl">{convertToCad(balance)} CAD</p>
+                  <p className="text-4xl font-bold">{formatNumber(balance.toString(), false)}</p>
+                  <p className="text-xl">{formatNumber(convertToCad(balance), true)}</p>
                 </div>
               </TabsContent>
               <TabsContent value="transactions">
@@ -336,16 +423,15 @@ export function MobileWalletDashboardComponent() {
                       <div className="text-right">
                         <p className={`font-semibold ${transaction.type === 'Received' ? 'text-green-600' : 'text-red-600'}`}>
                           {transaction.type === 'Received' ? '+' : '-'}
-                          
                           {showAmountInCad 
-                            ? `$${convertToCad(transaction.amount)}`
-                            : `${transaction.amount} TCOIN`
+                            ? formatNumber(convertToCad(transaction.amount), true)
+                            : formatNumber(transaction.amount.toString(), false)
                           }
                         </p>
                         <p className="text-sm text-gray-500">
                           Charity: {showAmountInCad 
-                            ? `$${(transaction.amount * 0.03 * exchangeRate).toFixed(2)}`
-                            : `${(transaction.amount * 0.03).toFixed(2)} TCOIN`
+                            ? formatNumber((transaction.amount * 0.03 * exchangeRate).toString(), true)
+                            : formatNumber((transaction.amount * 0.03).toString(), false)
                           }
                         </p>
                         <p className="text-sm text-gray-500">{transaction.date}</p>
@@ -353,6 +439,20 @@ export function MobileWalletDashboardComponent() {
                     </li>
                   ))}
                 </ul>
+              </TabsContent>
+              <TabsContent value="charity">
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={charityContributionData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="date" />
+                      <YAxis />
+                      <Tooltip />
+                      <Area type="monotone" dataKey="TheShelter" stackId="1" stroke="#8884d8" fill="#8884d8" />
+                      <Area type="monotone" dataKey="TheFoodBank" stackId="1" stroke="#82ca9d" fill="#82ca9d" />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
               </TabsContent>
             </Tabs>
           </CardContent>
@@ -367,24 +467,23 @@ export function MobileWalletDashboardComponent() {
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className="w-full">
-                    <CreditCard className="mr-2 h-4 w-4" /> Top Up with Credit Card
+                    <CreditCard className="mr-2 h-4 w-4" /> Top Up with Interac eTransfer
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Top Up with Credit Card</DialogTitle>
+                    <DialogTitle>Top Up with Interac eTransfer</DialogTitle>
                     <DialogDescription>
-                      Enter your credit card details to top up your TCOIN balance.
+                      Send an Interac eTransfer to top up your TCOIN balance.
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">
-                    <Input placeholder="Card Number" />
-                    <div className="flex space-x-2">
-                      <Input placeholder="MM/YY" />
-                      <Input placeholder="CVC" />
-                    </div>
-                    <Input placeholder="Amount in CAD" />
-                    <Button className="w-full">Top Up</Button>
+                    <p><strong>Destination email:</strong> topup@tcoin.me</p>
+                    <p><strong>Reference number:</strong> {Math.random().toString(36).substring(2, 10).toUpperCase()}</p>
+                    <p className="text-sm text-gray-500">
+                      Note: You must send the eTransfer from a bank account with the same owner as this TCOIN account. 
+                      The balance will show up within 24 hours.
+                    </p>
                   </div>
                 </DialogContent>
               </Dialog>
@@ -404,7 +503,10 @@ export function MobileWalletDashboardComponent() {
                   <div className="space-y-4">
                     <Input placeholder="Amount in TCOIN" />
                     <p>Estimated CAD: $0.00</p>
-                    <Input placeholder="Bank Account Number" />
+                    <Input placeholder="Interac eTransfer email or phone" />
+                    <p className="text-sm text-gray-500">
+                      Note: The transfer will be completed within the next 24 hours.
+                    </p>
                     <Button className="w-full">Convert and Transfer</Button>
                   </div>
                 </DialogContent>
