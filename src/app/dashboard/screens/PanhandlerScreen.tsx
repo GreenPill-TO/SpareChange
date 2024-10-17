@@ -1,4 +1,4 @@
-import { useAuth } from "@TCoin/api/hooks/useAuth";
+import { useAuth } from "@/api/hooks/useAuth";
 
 export function PanhandlerScreen() {
   const { userData } = useAuth();

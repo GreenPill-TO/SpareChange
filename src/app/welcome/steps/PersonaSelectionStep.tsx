@@ -1,4 +1,4 @@
-import { usePersonas } from "@TCoin/api/hooks/usePersonas";
+import { usePersonas } from "@/api/hooks/usePersonas";
 import classNames from "classnames";
 import React, { useEffect } from "react";
 

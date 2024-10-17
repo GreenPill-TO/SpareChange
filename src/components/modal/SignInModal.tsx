@@ -1,12 +1,12 @@
-import { useSendPasscodeMutation, useVerifyPasscodeMutation } from "@TCoin/api/mutations/usePasscode";
+import { useSendPasscodeMutation, useVerifyPasscodeMutation } from "@/api/mutations/usePasscode";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import OTPForm from "../form/OTPForm";
 import ImageCarousel from "../image-carousel/ImageCarousel";
 
-import { createCubidUser } from "@TCoin/api/services/cubidService";
-import { createNewUser, fetchUserByContact } from "@TCoin/api/services/supabaseService";
+import { createCubidUser } from "@/api/services/cubidService";
+import { createNewUser, fetchUserByContact } from "@/api/services/supabaseService";
 
 const constants = {
   SIGN_UP_IMAGES: [

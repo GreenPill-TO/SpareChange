@@ -22,13 +22,10 @@ export const useAuth = () => {
     queryKey: ["user-data"],
     queryFn: async () => {
       try {
-        const { user } = await fetchUserByContact(
-          authQuery?.data?.user?.app_metadata?.provider || "email",
-          authQuery?.data?.user?.email || ""
-        );
+        const { user } = await fetchUserByContact(authQuery?.data?.user?.app_metadata?.provider || "email", authQuery?.data?.user?.email || "");
         if (!user?.cubid_id) {
           console.error("Invalid cubid_id");
-          return null;                
+          return null;
         }
 
         const cubidData = await fetchCubidDataFromSupabase(user?.cubid_id);
@@ -55,7 +52,7 @@ export const useAuth = () => {
       } catch (error) {
         // Log the error explicitly to the console
         console.error("Error in fetching user or cubid_id:", error);
-        throw error;  // React Query will handle it
+        throw error; // React Query will handle it
       }
     },
     enabled: !!authQuery.data, // Only fetch if authenticated

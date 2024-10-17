@@ -2,22 +2,23 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 // Import all the step components
-import { useAuth } from "@TCoin/api/hooks/useAuth";
-import { updateCubidDataInSupabase } from "@TCoin/api/services/supabaseService";
-import AddFundsStep from "@TCoin/app/welcome/steps/AddFundsStep";
-import DonationPreferencesStep from "@TCoin/app/welcome/steps/DonationPreferencesStep";
-import FinalWelcomeStep from "@TCoin/app/welcome/steps/FinalWelcomeStep";
-import OnboardingIntroStep from "@TCoin/app/welcome/steps/OnboardingIntroStep";
-import PersonaSelectionStep from "@TCoin/app/welcome/steps/PersonaSelectionStep";
-import PublicProfileCreationStep from "@TCoin/app/welcome/steps/PublicProfileCreationStep";
-import ReceiveDonationsStep from "@TCoin/app/welcome/steps/ReceiveDonationsStep";
-import StorePaymentsStep from "@TCoin/app/welcome/steps/StorePaymentsStep";
-import StoreProfileStep from "@TCoin/app/welcome/steps/StoreProfileStep";
-import UserInfoStep from "@TCoin/app/welcome/steps/UserInfoStep";
-import { TCubidData } from "@TCoin/types/cubid";
+import { useAuth } from "@/api/hooks/useAuth";
+import { updateCubidDataInSupabase } from "@/api/services/supabaseService";
+import AddFundsStep from "@/app/welcome/steps/AddFundsStep";
+import DonationPreferencesStep from "@/app/welcome/steps/DonationPreferencesStep";
+import FinalWelcomeStep from "@/app/welcome/steps/FinalWelcomeStep";
+import OnboardingIntroStep from "@/app/welcome/steps/OnboardingIntroStep";
+import PersonaSelectionStep from "@/app/welcome/steps/PersonaSelectionStep";
+import PublicProfileCreationStep from "@/app/welcome/steps/PublicProfileCreationStep";
+import ReceiveDonationsStep from "@/app/welcome/steps/ReceiveDonationsStep";
+import StorePaymentsStep from "@/app/welcome/steps/StorePaymentsStep";
+import StoreProfileStep from "@/app/welcome/steps/StoreProfileStep";
+import UserInfoStep from "@/app/welcome/steps/UserInfoStep";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/Card";
+import { TCubidData } from "@/types/cubid";
 import classNames from "classnames";
 
 const stepHeadings = ["Introduction", "Complete Your Profile", "Choose Your Persona", "Additional Details", "Finalize Setup", "You're All Set!"];
@@ -48,10 +49,7 @@ const WelcomeFlow: React.FC = () => {
 
   const [isNextEnabled, setIsNextEnabled] = useState<boolean>(true);
 
-  const mainClass = classNames(
-    "welcome-flow-container flex-grow flex flex-col items-center justify-center",
-    "bg-gradient-to-r from-magenta-500 to-indigo-500 dark:text-whitetext-gray-900"
-  );
+  const mainClass = classNames("flex-grow flex flex-col items-center justify-center overflow-auto");
 
   const saveToLocalStorage = () => {
     localStorage.setItem("welcomeFlowData", JSON.stringify(userFormData));
@@ -109,135 +107,135 @@ const WelcomeFlow: React.FC = () => {
 
   return (
     <div className={mainClass}>
-      <div className={classNames("w-full max-w-4xl p-6 rounded-lg shadow-lg", "dark:bg-gray-800 dark:text-white bg-white text-gray-900")}>
-        {/* Carousel for Progress */}
-        <div className="flex justify-center mb-4">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <div
-              key={index}
-              className={`w-2 h-2 rounded-full mx-1 ${index + 1 === userFormData.current_step ? "bg-indigo-600" : "dark:bg-gray-600 bg-gray-300"}`}
-            ></div>
-          ))}
-        </div>
+      <Card>
+        <CardHeader className="text-2xl font-semibold text-center mb-8">
+          <div className="flex justify-center mb-4">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div
+                key={index}
+                className={`w-2 h-2 rounded-full mx-1 ${index + 1 === userFormData.current_step ? "bg-indigo-600" : "dark:bg-gray-600 bg-gray-300"}`}
+              ></div>
+            ))}
+          </div>
+          {stepHeadings[userFormData.current_step - 1]}
+        </CardHeader>
 
-        {/* Dynamic Heading */}
-        <h2 className="text-2xl font-semibold text-center mb-8">{stepHeadings[userFormData.current_step - 1]}</h2>
+        <CardContent>
+          {/* <TransitionGroup> */}
+          {/* <CSSTransition key={userFormData.current_step} classNames="slide" timeout={300}> */}
+          <div className="step-content">
+            {userFormData.current_step === 1 && <OnboardingIntroStep nextStep={nextStep} />}
+            {userFormData.current_step === 2 && (
+              <UserInfoStep
+                fullName={userFormData.full_name}
+                username={userFormData.username}
+                email={userFormData.email}
+                phoneNumber={userFormData.phone}
+                setFullName={(v) => updateUserFormField("full_name", v)}
+                setUserName={(v) => updateUserFormField("username", v)}
+                setEmail={(v) => updateUserFormField("email", v)}
+                setPhoneNumber={(v) => updateUserFormField("phone", v)}
+                setIsNextEnabled={setIsNextEnabled}
+              />
+            )}
+            {userFormData.current_step === 3 && (
+              <PersonaSelectionStep
+                persona={userFormData.persona}
+                handlePersonaSelection={handlePersonaSelection}
+                setIsNextEnabled={setIsNextEnabled}
+              />
+            )}
+            {userFormData.current_step === 4 && userFormData.persona && (
+              <>
+                {(userFormData.persona === "ph" || userFormData.persona === "tip") && (
+                  <PublicProfileCreationStep
+                    bio={userFormData.bio}
+                    address={userFormData.address}
+                    profileImage={userFormData.profile_image_url}
+                    setBio={(v) => updateUserFormField("bio", v)}
+                    setAddress={(v) => updateUserFormField("address", v)}
+                    handleImageUpload={(v) => updateUserFormField("profile_image_url", v)}
+                    setIsNextEnabled={setIsNextEnabled}
+                    nextStep={nextStep}
+                  />
+                )}
+                {userFormData.persona === "sm" && <StorePaymentsStep nextStep={nextStep} setIsNextEnabled={setIsNextEnabled} />}
+                {userFormData.persona === "dr" && (
+                  <DonationPreferencesStep
+                    preferredDonationAmount={userFormData.preferred_donation_amount || 0}
+                    selectedCause={userFormData.selected_cause}
+                    goodTip={userFormData.good_tip}
+                    defaultTip={userFormData.default_tip}
+                    setPreferredDonationAmount={(v) => updateUserFormField("preferred_donation_amount", v)}
+                    setSelectedCause={(v) => updateUserFormField("selected_cause", v)}
+                    setGoodTip={(v) => updateUserFormField("good_tip", v)}
+                    setDefaultTip={(v) => updateUserFormField("default_tip", v)}
+                    setIsNextEnabled={setIsNextEnabled}
+                    nextStep={nextStep}
+                  />
+                )}
+              </>
+            )}
+            {userFormData.current_step === 5 && userFormData.persona && (
+              <>
+                {(userFormData.persona === "ph" || userFormData.persona === "tip") && (
+                  <ReceiveDonationsStep nextStep={nextStep} setIsNextEnabled={setIsNextEnabled} />
+                )}
+                {userFormData.persona === "sm" && (
+                  <StoreProfileStep
+                    fullName={userFormData.full_name}
+                    phoneNumber={userFormData.phone}
+                    address={userFormData.address}
+                    setFullName={(v) => updateUserFormField("full_name", v)}
+                    setPhoneNumber={(v) => updateUserFormField("phone", v)}
+                    setAddress={(v) => updateUserFormField("address", v)}
+                    nextStep={nextStep}
+                    setIsNextEnabled={setIsNextEnabled}
+                  />
+                )}
+                {userFormData.persona === "dr" && (
+                  <AddFundsStep
+                    preferredDonationAmount={userFormData.preferred_donation_amount || 0}
+                    setPreferredDonationAmount={(v) => updateUserFormField("preferred_donation_amount", v)}
+                    handleSubmitPayment={() => {}}
+                    nextStep={nextStep}
+                    setIsNextEnabled={setIsNextEnabled}
+                  />
+                )}
+              </>
+            )}
+            {userFormData.current_step === 6 && (
+              <FinalWelcomeStep
+                onDashboardRedirect={() => {
+                  saveToLocalStorage();
+                  syncToSupabase(true);
+                  router.push("/dashboard");
+                }}
+              />
+            )}
+          </div>
+          {/* </CSSTransition> */}
+          {/* </TransitionGroup> */}
+        </CardContent>
 
-        <TransitionGroup>
-          <CSSTransition key={userFormData.current_step} classNames="slide" timeout={300}>
-            <div className="step-content">
-              {userFormData.current_step === 1 && <OnboardingIntroStep nextStep={nextStep} />}
-              {userFormData.current_step === 2 && (
-                <UserInfoStep
-                  fullName={userFormData.full_name}
-                  username={userFormData.username}
-                  email={userFormData.email}
-                  phoneNumber={userFormData.phone}
-                  setFullName={(v) => updateUserFormField("full_name", v)}
-                  setUserName={(v) => updateUserFormField("username", v)}
-                  setEmail={(v) => updateUserFormField("email", v)}
-                  setPhoneNumber={(v) => updateUserFormField("phone", v)}
-                  setIsNextEnabled={setIsNextEnabled}
-                />
-              )}
-              {userFormData.current_step === 3 && (
-                <PersonaSelectionStep
-                  persona={userFormData.persona}
-                  handlePersonaSelection={handlePersonaSelection}
-                  setIsNextEnabled={setIsNextEnabled}
-                />
-              )}
-              {userFormData.current_step === 4 && userFormData.persona && (
-                <>
-                  {(userFormData.persona === "ph" || userFormData.persona === "tip") && (
-                    <PublicProfileCreationStep
-                      bio={userFormData.bio}
-                      address={userFormData.address}
-                      profileImage={userFormData.profile_image_url}
-                      setBio={(v) => updateUserFormField("bio", v)}
-                      setAddress={(v) => updateUserFormField("address", v)}
-                      handleImageUpload={(v) => updateUserFormField("profile_image_url", v)}
-                      setIsNextEnabled={setIsNextEnabled}
-                      nextStep={nextStep}
-                    />
-                  )}
-                  {userFormData.persona === "sm" && <StorePaymentsStep nextStep={nextStep} setIsNextEnabled={setIsNextEnabled} />}
-                  {userFormData.persona === "dr" && (
-                    <DonationPreferencesStep
-                      preferredDonationAmount={userFormData.preferred_donation_amount || 0}
-                      selectedCause={userFormData.selected_cause}
-                      goodTip={userFormData.good_tip}
-                      defaultTip={userFormData.default_tip}
-                      setPreferredDonationAmount={(v) => updateUserFormField("preferred_donation_amount", v)}
-                      setSelectedCause={(v) => updateUserFormField("selected_cause", v)}
-                      setGoodTip={(v) => updateUserFormField("good_tip", v)}
-                      setDefaultTip={(v) => updateUserFormField("default_tip", v)}
-                      setIsNextEnabled={setIsNextEnabled}
-                      nextStep={nextStep}
-                    />
-                  )}
-                </>
-              )}
-              {userFormData.current_step === 5 && userFormData.persona && (
-                <>
-                  {(userFormData.persona === "ph" || userFormData.persona === "tip") && (
-                    <ReceiveDonationsStep nextStep={nextStep} setIsNextEnabled={setIsNextEnabled} />
-                  )}
-                  {userFormData.persona === "sm" && (
-                    <StoreProfileStep
-                      fullName={userFormData.full_name}
-                      phoneNumber={userFormData.phone}
-                      address={userFormData.address}
-                      setFullName={(v) => updateUserFormField("full_name", v)}
-                      setPhoneNumber={(v) => updateUserFormField("phone", v)}
-                      setAddress={(v) => updateUserFormField("address", v)}
-                      nextStep={nextStep}
-                      setIsNextEnabled={setIsNextEnabled}
-                    />
-                  )}
-                  {userFormData.persona === "dr" && (
-                    <AddFundsStep
-                      preferredDonationAmount={userFormData.preferred_donation_amount || 0}
-                      setPreferredDonationAmount={(v) => updateUserFormField("preferred_donation_amount", v)}
-                      handleSubmitPayment={() => {}}
-                      nextStep={nextStep}
-                      setIsNextEnabled={setIsNextEnabled}
-                    />
-                  )}
-                </>
-              )}
-              {userFormData.current_step === 6 && (
-                <FinalWelcomeStep
-                  onDashboardRedirect={() => {
-                    saveToLocalStorage();
-                    syncToSupabase(true);
-                    router.push("/dashboard");
-                  }}
-                />
-              )}
-            </div>
-          </CSSTransition>
-        </TransitionGroup>
-
-        {/* Navigation Buttons */}
-        <div className="flex justify-between mt-6">
+        <CardFooter>
           {userFormData.current_step > 1 && userFormData.current_step < 6 && (
-            <button onClick={previousStep} className="text-indigo-600">
+            <Button onClick={previousStep} className="text-indigo-600">
               Back
-            </button>
+            </Button>
           )}
           {userFormData.current_step < 6 && (
-            <button
+            <Button
               onClick={nextStep}
               className={`text-indigo-600 ${!isNextEnabled && "opacity-50 cursor-not-allowed"}`}
               disabled={!isNextEnabled}
               style={{ marginLeft: "auto" }}
             >
               Continue
-            </button>
+            </Button>
           )}
-        </div>
-      </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 };

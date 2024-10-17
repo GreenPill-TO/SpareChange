@@ -1,5 +1,5 @@
+import { TPersona } from "@/types/persona";
 import { useQuery } from "@tanstack/react-query";
-import { TPersona } from "@TCoin/types/persona";
 import { getPersonas } from "../services/supabaseService";
 
 // Custom hook for authentication, fetching user, and handling Cubid data

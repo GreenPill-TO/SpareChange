@@ -1,5 +1,5 @@
-import AmountField from "@TCoin/components/form/form-fields/AmountField";
-import PaymentForm from "@TCoin/components/form/form-fields/PaymentForm";
+import AmountField from "@/components/form/form-fields/AmountField";
+import PaymentForm from "@/components/form/form-fields/PaymentForm";
 import React, { useEffect } from "react";
 
 interface AddFundsStepProps {

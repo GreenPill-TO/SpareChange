@@ -1,4 +1,4 @@
-import InfoBox from "@TCoin/components/form/form-fields/InfoBox";
+import InfoBox from "@/components/ui/InfoBox";
 import React, { useEffect } from "react";
 
 interface StorePaymentsStepProps {

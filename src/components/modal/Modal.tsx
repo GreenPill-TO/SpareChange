@@ -1,5 +1,5 @@
+import { useModal } from "@/contexts/ModalContext";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import { useModal } from "@TCoin/contexts/ModalContext";
 import classNames from "classnames";
 import React, { useEffect, useRef } from "react";
 

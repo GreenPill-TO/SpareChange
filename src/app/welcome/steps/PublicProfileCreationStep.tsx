@@ -1,6 +1,6 @@
-import AddressField from "@TCoin/components/form/form-fields/AddressField";
-import ImageUpload from "@TCoin/components/form/form-fields/ImageUpload";
-import TextArea from "@TCoin/components/form/form-fields/TextArea";
+import AddressField from "@/components/form/form-fields/AddressField";
+import ImageUpload from "@/components/form/form-fields/ImageUpload";
+import TextArea from "@/components/form/form-fields/TextArea";
 import React, { useEffect } from "react";
 
 interface PublicProfileCreationStepProps {

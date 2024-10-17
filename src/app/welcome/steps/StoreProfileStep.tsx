@@ -1,6 +1,6 @@
-import AddressField from "@TCoin/components/form/form-fields/AddressField";
-import Dropdown from "@TCoin/components/form/form-fields/Dropdown";
-import TextField from "@TCoin/components/form/form-fields/TextField";
+import AddressField from "@/components/form/form-fields/AddressField";
+import Dropdown from "@/components/form/form-fields/Dropdown";
+import TextField from "@/components/form/form-fields/TextField";
 import React, { useEffect } from "react";
 
 interface StoreProfileStepProps {

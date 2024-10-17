@@ -1,6 +1,6 @@
 "use client";
 
-import useDarkMode from "@TCoin/hooks/useDarkMode";
+import useDarkMode from "@/hooks/useDarkMode";
 import classNames from "classnames";
 import { ReactNode } from "react";
 

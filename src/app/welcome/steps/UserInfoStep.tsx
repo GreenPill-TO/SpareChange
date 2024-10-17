@@ -1,5 +1,5 @@
-import { useAuth } from "@TCoin/api/hooks/useAuth";
-import TextField from "@TCoin/components/form/form-fields/TextField";
+import { useAuth } from "@/api/hooks/useAuth";
+import TextField from "@/components/form/form-fields/TextField";
 import React, { useEffect, useMemo } from "react";
 
 interface UserInfoStepProps {
