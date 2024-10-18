@@ -115,13 +115,7 @@ function OTPForm({
             <label className="label">
               <span className="label-text text-xs">Verification Code</span>
             </label>
-            <input
-              type="text"
-              value={passcode}
-              placeholder="Ex- 123456"
-              onChange={(e) => setPasscode(e.target.value)}
-              className={`input input-bordered input-primary w-full`}
-            />
+            <Input type="text" value={passcode} placeholder="Ex- 123456" onChange={(e) => setPasscode(e.target.value)} />
           </div>
         )}
       </div>
