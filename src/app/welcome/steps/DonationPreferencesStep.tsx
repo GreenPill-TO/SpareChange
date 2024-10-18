@@ -1,5 +1,5 @@
-import Dropdown from "@/components/form/form-fields/Dropdown";
-import TextField from "@/components/form/form-fields/TextField";
+import InputField from "@/components/ui/InputField";
+import { Select } from "@/components/ui/Select";
 import React, { useEffect } from "react";
 
 interface DonationPreferencesStepProps {
@@ -15,7 +15,7 @@ interface DonationPreferencesStepProps {
   nextStep: () => void;
 }
 
-const DonationPreferencesStep: React.FC<DonationPreferencesStepProps> = ({
+export const DonationPreferencesStep: React.FC<DonationPreferencesStepProps> = ({
   preferredDonationAmount,
   defaultTip,
   goodTip,
@@ -43,34 +43,35 @@ const DonationPreferencesStep: React.FC<DonationPreferencesStepProps> = ({
   };
 
   return (
-    <div className={`donation-preferences-step dark:text-white text-gray-900`}>
+    <div>
       <h2 className="text-2xl font-bold mb-4">Customize Your Donation Preferences</h2>
-      <TextField
+      <InputField
         label="Preferred Donation Amount (CAD)"
         name="preferredDonationAmount"
         value={preferredDonationAmount}
         placeholder="$5.00"
         onChange={(e) => setPreferredDonationAmount(parseFloat(e.currentTarget.value))}
       />
-      <TextField
+      <InputField
         label="Default Tip Percentage"
         name="defaultTip"
         value={defaultTip ? defaultTip.toString() : ""}
         placeholder="15%"
         onChange={handleDefaultTipChange}
       />
-      <TextField
+      <InputField
         label="Good Tip Percentage for Excellent Service"
         name="goodTip"
         value={goodTip ? goodTip.toString() : ""}
         placeholder="25%"
         onChange={handleGoodTipChange}
       />
-      <Dropdown
+      <Select
+        variant="bordered"
         label="Select Your Cause"
         name="selectedCause"
         value={selectedCause}
-        onChange={(e) => setSelectedCause(e.target.value)}
+        onValueChange={(v) => setSelectedCause(v)}
         options={[
           { label: "Select", value: "" },
           { label: "Food Bank", value: "Food Bank" },
@@ -83,5 +84,3 @@ const DonationPreferencesStep: React.FC<DonationPreferencesStepProps> = ({
     </div>
   );
 };
-
-export default DonationPreferencesStep;

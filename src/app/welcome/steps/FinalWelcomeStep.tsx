@@ -6,7 +6,7 @@ interface FinalWelcomeStepProps {
   onDashboardRedirect: () => void;
 }
 
-const FinalWelcomeStep: React.FC<FinalWelcomeStepProps> = ({ onDashboardRedirect }) => {
+export const FinalWelcomeStep: React.FC<FinalWelcomeStepProps> = ({ onDashboardRedirect }) => {
   return (
     <div className="final-welcome-step">
       <h2 className="text-2xl font-bold">You're All Set!</h2>
@@ -15,5 +15,3 @@ const FinalWelcomeStep: React.FC<FinalWelcomeStepProps> = ({ onDashboardRedirect
     </div>
   );
 };
-
-export default FinalWelcomeStep;

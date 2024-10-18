@@ -3,6 +3,8 @@ import { countryCodes, formatPhoneNumber } from "@/utils/phone-data";
 import { ChangeEvent, FormEvent } from "react";
 import { Spinner } from "../icons";
 import { Button } from "../ui/Button";
+import { Input } from "../ui/Input";
+import { Select } from "../ui/Select";
 
 type OTPFormProps = {
   authMethod: "phone" | "email";
@@ -44,16 +46,20 @@ function OTPForm({
         {!isOtpSent && (
           <>
             <p className="text-center md:mt-0 mt-6 text-xl mb-4 font-semibold">Sign In or Sign Up</p>
+
             <div className="flex mb-4 items-center">
-              <label className="mr-4">Sign in with:</label>
-              <select
+              <Select
+                label="Sign in with:"
+                variant="bordered"
+                elSize="md"
+                name="authMethod"
                 value={authMethod}
-                onChange={(e) => handleAuthMethodChange(e.target.value as "phone" | "email")}
-                className={`p-2 rounded border dark:bg-gray-800 dark:text-white dark:border-gray-600 bg-white text-black border-gray-300`}
-              >
-                <option value="phone">Phone</option>
-                <option value="email">Email</option>
-              </select>
+                onValueChange={(v) => handleAuthMethodChange(v as "phone" | "email")}
+                options={[
+                  { label: "Phone", value: "phone" },
+                  { label: "Email", value: "email" },
+                ]}
+              />
             </div>
           </>
         )}
@@ -68,23 +74,22 @@ function OTPForm({
         {!isOtpSent && authMethod === "phone" && (
           <div className="form-control w-full mt-8 flex">
             <div className="flex w-full">
-              <select
+              <Select
+                variant="bordered"
+                elSize="md"
+                name="countryCode"
                 value={countryCode}
-                onChange={(e) => setCountryCode(e.target.value)}
-                className={`p-2 mr-2 rounded border dark:bg-gray-800 dark:text-white dark:border-gray-600 bg-white text-black border-gray-300`}
-              >
-                {countryCodes.map((country) => (
-                  <option key={country.code} value={country.code}>
-                    {country.flag} {country.code}
-                  </option>
-                ))}
-              </select>
-              <input
+                onValueChange={(v) => setCountryCode(v)}
+                options={countryCodes.map((v) => ({ value: v.code, label: `${v.flag} ${v.code}` }))}
+              />
+              <Input
+                variant="bordered"
+                elSize="md"
                 type="tel"
                 placeholder="Enter your phone number"
                 value={contact}
                 onChange={handleContactChange}
-                className={`flex-1 p-2 rounded border dark:bg-gray-800 dark:text-white dark:border-gray-600 bg-white text-black border-gray-300`}
+                className={"ml-2 flex-grow"}
                 required
               />
             </div>
@@ -93,12 +98,13 @@ function OTPForm({
 
         {!isOtpSent && authMethod === "email" && (
           <div className="form-control w-full mt-8">
-            <input
+            <Input
+              elSize="md"
+              variant="bordered"
               type="email"
               placeholder="Enter your email"
               value={contact}
               onChange={handleContactChange}
-              className={`w-full p-2 mb-4 rounded border dark:bg-gray-800 dark:text-white dark:border-gray-600 bg-white text-black border-gray-300`}
               required
             />
           </div>
@@ -107,15 +113,9 @@ function OTPForm({
         {isOtpSent && (
           <div className="form-control w-full mt-8">
             <label className="label">
-              <span className="label-text text-base-content text-xs text-slate-600 dark:text-slate-300">Verification Code</span>
+              <span className="label-text text-xs">Verification Code</span>
             </label>
-            <input
-              type="text"
-              value={passcode}
-              placeholder="Ex- 123456"
-              onChange={(e) => setPasscode(e.target.value)}
-              className={`input input-bordered input-primary w-full dark:bg-gray-800 dark:text-white bg-white text-black`}
-            />
+            <Input type="text" value={passcode} placeholder="Ex- 123456" onChange={(e) => setPasscode(e.target.value)} />
           </div>
         )}
       </div>

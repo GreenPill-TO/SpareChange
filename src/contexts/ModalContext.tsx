@@ -1,30 +1,42 @@
 "use client";
-
+// ModalContext.tsx
 import Modal from "@/components/modal/Modal";
 import React, { createContext, ReactNode, useContext, useState } from "react";
 
-type TModalSize = "small" | "medium" | "large";
-type TModalProps = {
-  content: ReactNode;
-  size?: TModalSize;
-};
-
+export interface ModalContentType {
+  content?: ReactNode | null;
+  title?: string;
+  description?: string;
+  elSize?: "sm" | "md" | "lg" | "xl" | "2xl" | "4xl";
+  isResponsive?: boolean;
+}
 interface ModalContextType {
   isOpen: boolean;
-  openModal: (props: TModalProps) => void;
+  modalContent: ModalContentType | null;
+  openModal: (content: ModalContentType) => void;
   closeModal: () => void;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
-export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [modalContent, setModalContent] = useState<ReactNode | null>(null);
-  const [size, setSize] = useState<TModalSize>("small");
+export const useModal = (): ModalContextType => {
+  const context = useContext(ModalContext);
+  if (!context) {
+    throw new Error("useModal must be used within a ModalProvider");
+  }
+  return context;
+};
 
-  const openModal = ({ content, size }: TModalProps) => {
-    setModalContent(content);
-    setSize(size || "small");
+interface ModalProviderProps {
+  children: ReactNode;
+}
+
+export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [modalContent, setModalContent] = useState<ModalContentType | null>(null);
+
+  const openModal = ({ content = null, title = "", description = "", elSize = "md", isResponsive = false }: ModalContentType) => {
+    setModalContent({ content, title, elSize, isResponsive, description });
     setIsOpen(true);
   };
 
@@ -34,21 +46,9 @@ export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   };
 
   return (
-    <ModalContext.Provider value={{ isOpen, openModal, closeModal }}>
+    <ModalContext.Provider value={{ isOpen, modalContent, openModal, closeModal }}>
       {children}
-      {isOpen && (
-        <Modal onClose={closeModal} size={size}>
-          {modalContent}
-        </Modal>
-      )}
+      {isOpen && <Modal modalContent={modalContent} closeModal={closeModal} />}
     </ModalContext.Provider>
   );
-};
-
-export const useModal = (): ModalContextType => {
-  const context = useContext(ModalContext);
-  if (!context) {
-    throw new Error("useModal must be used within a ModalProvider");
-  }
-  return context;
 };

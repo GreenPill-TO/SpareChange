@@ -1,49 +1,49 @@
 "use client";
 
-import * as TabsPrimitive from "@radix-ui/react-tabs";
 import * as React from "react";
 
 import { cn } from "@/lib/classnames";
+import { cva, type VariantProps } from "class-variance-authority";
 
-const Tabs = TabsPrimitive.Root;
+const tabsVariants = cva("tabs", {
+  variants: {
+    variant: {
+      default: "tabs-bordered",
+      bordered: "tabs-bordered",
+      lifted: "tabs-lifted",
+      boxed: "tabs-boxed",
+    },
+    size: {
+      default: "",
+      sm: "tabs-sm",
+      xs: "tabs-xs",
+      md: "tabs-md",
+      lg: "tabs-lg",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+    size: "default",
+  },
+});
 
-const TabsList = React.forwardRef<React.ElementRef<typeof TabsPrimitive.List>, React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>>(
-  ({ className, ...props }, ref) => (
-    <TabsPrimitive.List
-      ref={ref}
-      className={cn("inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground", className)}
-      {...props}
-    />
-  )
-);
-TabsList.displayName = TabsPrimitive.List.displayName;
+export interface TabsProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof tabsVariants> {}
 
-const TabsTrigger = React.forwardRef<React.ElementRef<typeof TabsPrimitive.Trigger>, React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>>(
-  ({ className, ...props }, ref) => (
-    <TabsPrimitive.Trigger
-      ref={ref}
-      className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm",
-        className
-      )}
-      {...props}
-    />
-  )
-);
-TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
+const Tabs: React.FC<TabsProps> = ({ variant, size, className, ...props }) => {
+  return <div role="tablist" className={cn(tabsVariants({ variant, size }), className)} {...props} />;
+};
 
-const TabsContent = React.forwardRef<React.ElementRef<typeof TabsPrimitive.Content>, React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>>(
-  ({ className, ...props }, ref) => (
-    <TabsPrimitive.Content
-      ref={ref}
-      className={cn(
-        "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-        className
-      )}
-      {...props}
-    />
-  )
-);
-TabsContent.displayName = TabsPrimitive.Content.displayName;
+export interface TabTriggerProps extends React.HTMLAttributes<HTMLInputElement> {
+  name?: string;
+  ariaLabel?: string;
+}
 
-export { Tabs, TabsContent, TabsList, TabsTrigger };
+const TabTrigger: React.FC<TabTriggerProps> = ({ className, name, ariaLabel, ...props }) => {
+  return <input type="radio" role="tab" className={cn("tab text-primary", className)} {...props} name={name} aria-label={ariaLabel} />;
+};
+
+const TabContent: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => {
+  return <div role="tabpanel" className={cn("tab-content p-10", className)} {...props} />;
+};
+
+export { TabContent, Tabs, TabTrigger };

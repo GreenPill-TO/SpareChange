@@ -1,7 +1,7 @@
-import classNames from "classnames";
+import { cn } from "@/lib/classnames";
 
 export default function AppLogo() {
-  const mainClass = classNames("text-base font-medium", "mr-8 p-px rounded-lg");
+  const mainClass = cn("text-base font-medium", "mr-8 p-px rounded-lg");
 
   return (
     <div className={mainClass}>

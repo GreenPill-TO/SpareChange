@@ -12,5 +12,6 @@ export type TCubidData = {
   default_tip: number | null;
   persona: string | null;
   current_step: number;
+  category: string;
   updated_at: string;
 };

@@ -1,26 +1,29 @@
-import AddressField from "@/components/form/form-fields/AddressField";
-import Dropdown from "@/components/form/form-fields/Dropdown";
-import TextField from "@/components/form/form-fields/TextField";
+import InputField from "@/components/ui/InputField";
+import { Select } from "@/components/ui/Select";
 import React, { useEffect } from "react";
 
 interface StoreProfileStepProps {
   fullName: string;
   phoneNumber: string;
   address: string;
+  category: string;
   setFullName: (value: string) => void;
   setPhoneNumber: (value: string) => void;
   setAddress: (value: string) => void;
+  setCategory: (v: string) => void;
   setIsNextEnabled: (isEnabled: boolean) => void;
   nextStep: () => void;
 }
 
-const StoreProfileStep: React.FC<StoreProfileStepProps> = ({
+export const StoreProfileStep: React.FC<StoreProfileStepProps> = ({
   fullName,
   phoneNumber,
   address,
+  category,
   setFullName,
   setPhoneNumber,
   setAddress,
+  setCategory,
   setIsNextEnabled,
 }) => {
   useEffect(() => {
@@ -30,23 +33,24 @@ const StoreProfileStep: React.FC<StoreProfileStepProps> = ({
   }, [fullName, phoneNumber, setIsNextEnabled]);
 
   return (
-    <div className={`store-profile-step dark:bg-gray-900 dark:text-whitebg-white text-gray-900 p-6 space-y-6`}>
+    <div className={`p-6 space-y-6`}>
       <h2 className="text-2xl font-bold">Profile Your Store</h2>
-      <TextField label="Store Name" name="storeName" value={fullName} onChange={(e) => setFullName(e.target.value)} />
-      <Dropdown
+      <InputField label="Store Name" name="storeName" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+      <Select
+        variant="bordered"
         label="Category"
         name="category"
-        value={phoneNumber}
-        onChange={(e) => setPhoneNumber(e.target.value)}
+        value={category}
+        onValueChange={(v) => setCategory(v)}
         options={[
           { label: "Restaurant", value: "restaurant" },
           { label: "Retail", value: "retail" },
           { label: "Service", value: "service" },
         ]}
       />
-      <AddressField label="Store Location" name="storeLocation" value={address} onChange={(e) => setAddress(e.target.value)} />
-      <TextField label="Contact Information" name="contactInfo" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-      <TextField
+      <InputField label="Store Location" name="storeLocation" value={address} onChange={(e) => setAddress(e.target.value)} />
+      <InputField label="Contact Information" name="contactInfo" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+      <InputField
         label="Max Tip/Donation Percentage"
         name="maxTip"
         value={fullName} // Replace with the appropriate state if this is a mistake
@@ -55,5 +59,3 @@ const StoreProfileStep: React.FC<StoreProfileStepProps> = ({
     </div>
   );
 };
-
-export default StoreProfileStep;

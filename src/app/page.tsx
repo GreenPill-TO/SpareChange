@@ -12,7 +12,7 @@ export default function Home() {
   const { openModal, closeModal } = useModal();
 
   const handleAuthClick = () => {
-    openModal({ content: <SignInModal closeModal={closeModal} extraObject={{ isSignIn: true }} />, size: "large" });
+    openModal({ content: <SignInModal closeModal={closeModal} extraObject={{ isSignIn: true }} /> });
   };
 
   return (

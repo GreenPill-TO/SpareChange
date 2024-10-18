@@ -6,7 +6,7 @@ interface ReceiveDonationsStepProps {
   nextStep: () => void;
 }
 
-const ReceiveDonationsStep: React.FC<ReceiveDonationsStepProps> = ({ setIsNextEnabled }) => {
+export const ReceiveDonationsStep: React.FC<ReceiveDonationsStepProps> = ({ setIsNextEnabled }) => {
   useEffect(() => {
     // Enable the "Next" button as there is no input to validate
     setIsNextEnabled(true);
@@ -22,5 +22,3 @@ const ReceiveDonationsStep: React.FC<ReceiveDonationsStepProps> = ({ setIsNextEn
     </div>
   );
 };
-
-export default ReceiveDonationsStep;

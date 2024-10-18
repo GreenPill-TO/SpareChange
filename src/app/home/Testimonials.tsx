@@ -22,14 +22,12 @@ const Testimonials = () => {
   return (
     <section id="testimonials" className={`py-12 w-full`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className={`text-3xl font-bold text-center mb-8 dark:text-white text-gray-900`}>Testimonials</h2>
+        <h2 className={`text-3xl font-bold text-center mb-8`}>Testimonials</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {testimonials.map((testimonial, index) => (
-            <Card key={index} className="p-4 text-center">
+            <Card key={index} className="p-4 flex flex-col items-center">
               <CardHeader className="p-2 text-4xl">
-                <Avatar>
-                  <img src={testimonial.image} alt={testimonial.name} className="w-full h-full object-cover" />
-                </Avatar>
+                <Avatar size="lg" src={testimonial.image} alt={testimonial.name} className="object-cover" />
               </CardHeader>
               <CardTitle className="text-xl">{testimonial.name}</CardTitle>
               <CardDescription>{testimonial.role}</CardDescription>

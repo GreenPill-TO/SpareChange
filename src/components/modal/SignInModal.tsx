@@ -1,9 +1,9 @@
 import { useSendPasscodeMutation, useVerifyPasscodeMutation } from "@/api/mutations/usePasscode";
+import OTPForm from "@/components/form/OTPForm";
+import ImageCarousel from "@/components/image-carousel/ImageCarousel";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import OTPForm from "../form/OTPForm";
-import ImageCarousel from "../image-carousel/ImageCarousel";
 
 import { createCubidUser } from "@/api/services/cubidService";
 import { createNewUser, fetchUserByContact } from "@/api/services/supabaseService";
@@ -121,7 +121,7 @@ function SignInModal({ closeModal }: SignInModalProps) {
 
   return (
     <div className="flex items-center rounded-xl">
-      <div className="grid grid-cols-1 md:grid-cols-2 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2">
         <ImageCarousel images={constants.SIGN_UP_IMAGES} />
         <div className="md:p-10 pb-12">
           <OTPForm
