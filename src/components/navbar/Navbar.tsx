@@ -3,7 +3,10 @@ import { useModal } from "@/contexts/ModalContext";
 import { cn } from "@/lib/classnames";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { LuCamera } from "react-icons/lu";
+import { QrScanModal } from "../modal";
 import SignInModal from "../modal/SignInModal";
+import { UserProfileModal } from "../modal/UserProfileModal";
 import { Avatar } from "../ui/Avatar";
 import { Button } from "../ui/Button";
 import NavLink from "./NavLink";
@@ -18,7 +21,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const onAuth = () => {
-    openModal({ content: <SignInModal closeModal={closeModal} extraObject={{ isSignIn: true }} />, size: "large" });
+    openModal({ content: <SignInModal closeModal={closeModal} extraObject={{ isSignIn: true }} />, elSize: "4xl" });
   };
 
   useEffect(() => {
@@ -50,7 +53,22 @@ export default function Navbar() {
   }, [isAuthenticated]);
 
   const Account = () => {
-    if (isAuthenticated) return <Avatar onClick={() => signOut()} src={"https://github.com/shadcn.png"} alt={"Avatar"}></Avatar>;
+    if (isAuthenticated)
+      return (
+        <Avatar
+          onClick={() => {
+            openModal({
+              content: <UserProfileModal closeModal={closeModal} />,
+              isResponsive: true,
+              title: "User Profile",
+              description: "Manage your account settings and preferences.",
+            });
+          }}
+          src={"https://github.com/shadcn.png"}
+          alt={"Avatar"}
+          className="mx-2"
+        />
+      );
     return <Button onClick={onAuth}>Authenticate</Button>;
   };
 
@@ -91,6 +109,22 @@ export default function Navbar() {
           </div>
           <div className="flex items-center">
             <ThemeToggleButton />
+            {isAuthenticated && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  openModal({
+                    content: <QrScanModal closeModal={closeModal} />,
+                    title: "Scan QR to Pay",
+                    description: "Use your device's camera to scan a QR code for payment.",
+                  });
+                }}
+                className="mr-2"
+              >
+                <LuCamera className="h-6 w-6" />
+              </Button>
+            )}
             <div className="relative">
               <Account />
             </div>

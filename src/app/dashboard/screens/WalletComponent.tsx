@@ -1,20 +1,15 @@
 "use client";
 
-import { QrScanModal } from "@/components/modal";
-import { Avatar } from "@/components/ui/Avatar";
+import { CharitySelectModal, ContactSelectModal, OffRampModal, QrScanModal, ShareQrModal, TopUpModal } from "@/components/modal";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
-import InputField from "@/components/ui/InputField";
 import { Label } from "@/components/ui/Label";
-import { Radio } from "@/components/ui/Radio";
 import { Switch } from "@/components/ui/Switch";
 import { TabContent, Tabs, TabTrigger } from "@/components/ui/Tabs";
 import { useModal } from "@/contexts/ModalContext";
 import { useState } from "react";
 import { LuCamera, LuCreditCard, LuDollarSign, LuQrCode, LuSend, LuShare2, LuUsers } from "react-icons/lu";
-import { toast } from "react-toastify";
 import { Area, AreaChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 const balanceHistory = [
@@ -41,18 +36,6 @@ const charityContributionData = [
   { date: "2023-09-01", TheShelter: 22, TheFoodBank: 18 },
 ];
 
-const charities = [
-  { value: "The FoodBank", label: "The FoodBank", id: "charity1" },
-  { value: "The Shelter", label: "The Shelter", id: "charity2" },
-  { value: "Save the Trees", label: "Save the Trees", id: "charity3" },
-];
-
-const contacts = [
-  { value: "Alice", label: "Alice", id: "contact1" },
-  { value: "Bob", label: "Bob", id: "contact2" },
-  { value: "Charlie", label: "Charlie", id: "contact3" },
-];
-
 export function MobileWalletDashboardComponent() {
   const { openModal, closeModal } = useModal();
   const [balance, setBalance] = useState(1000);
@@ -62,7 +45,6 @@ export function MobileWalletDashboardComponent() {
   const [cadAmount, setCadAmount] = useState("");
   const [showAmountInCad, setShowAmountInCad] = useState(false);
   const [selectedCharity, setSelectedCharity] = useState("The FoodBank");
-  const [selectedContact, setSelectedContact] = useState("");
   const exchangeRate = 3.3;
 
   const [charityData, setCharityData] = useState({
@@ -110,51 +92,7 @@ export function MobileWalletDashboardComponent() {
   };
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
-      <header className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">TCOIN Wallet</h1>
-        <div className="flex space-x-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => {
-              openModal({ content: <QrScanModal closeModal={closeModal} />, size: "medium" });
-            }}
-          >
-            <LuCamera className="h-6 w-6" />
-          </Button>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Avatar src="https://github.com/shadcn.png" alt="@shadcn" />
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>User Profile</DialogTitle>
-                <DialogDescription>Manage your account settings and preferences.</DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-4 mb-4">
-                  <Avatar className="w-20 h-20" src="https://github.com/shadcn.png" alt="@shadcn" />
-                  <Button variant="link" className="p-0 h-auto" onClick={() => console.log("Change avatar")}>
-                    Change avatar
-                  </Button>
-                </div>
-                <p>
-                  <strong>Name:</strong> John Doe
-                </p>
-                <p>
-                  <strong>Email:</strong> john.doe@example.com
-                </p>
-                <Button className="w-full">Edit Profile</Button>
-                <Button className="w-full" variant="outline">
-                  Log Out
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </header>
-
+    <div className="container mx-auto sm:p-4 space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2">
           <CardHeader>
@@ -163,39 +101,22 @@ export function MobileWalletDashboardComponent() {
           <CardContent>
             <div className="space-y-2">
               <p>
-                My default charity: <strong>{selectedCharity}</strong>{" "}
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="link" className="p-0 h-auto font-normal text-blue-500">
-                      change
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Change Default Charity</DialogTitle>
-                      <DialogDescription>Select a new default charity for your contributions.</DialogDescription>
-                    </DialogHeader>
-                    {charities.map((charity) => {
-                      return (
-                        <Radio
-                          name="charity-selection"
-                          key={charity.id}
-                          label={charity.label}
-                          value={charity.value}
-                          onValueChange={setSelectedCharity}
-                          id={charity.id}
-                        />
-                      );
-                    })}
-
-                    <div className="flex justify-end space-x-2 mt-4">
-                      <Button variant="outline" onClick={() => setSelectedCharity("The FoodBank")}>
-                        Cancel
-                      </Button>
-                      <Button disabled={selectedCharity === "The FoodBank"}>Set as default</Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                My default charity: <strong>{selectedCharity}</strong>
+                <Button
+                  variant="link"
+                  className="p-0 ml-2 h-auto font-normal text-blue-500"
+                  onClick={() => {
+                    openModal({
+                      content: (
+                        <CharitySelectModal closeModal={closeModal} selectedCharity={selectedCharity} setSelectedCharity={setSelectedCharity} />
+                      ),
+                      title: "Change Default Charity",
+                      description: "Select a new default charity for your contributions.",
+                    });
+                  }}
+                >
+                  change
+                </Button>
               </p>
               <p>
                 My contribution to {selectedCharity}: {charityData.personalContribution} TCOIN
@@ -218,8 +139,15 @@ export function MobileWalletDashboardComponent() {
               <p className="mt-2 qr-code-text">Your default QR code (unspecified amount)</p>
             </div>
             <div className="space-y-2">
-              <Input name="qrTcoin" value={qrTcoinAmount} onChange={handleQrAmountChange} placeholder="Enter TCOIN amount" />
-              <Input name="qrCad" value={qrCadAmount} onChange={handleQrAmountChange} placeholder="Enter CAD amount" />
+              <Input
+                name="qrTcoin"
+                elSize="md"
+                className="w-full"
+                value={qrTcoinAmount}
+                onChange={handleQrAmountChange}
+                placeholder="Enter TCOIN amount"
+              />
+              <Input name="qrCad" elSize="md" className="w-full" value={qrCadAmount} onChange={handleQrAmountChange} placeholder="Enter CAD amount" />
               <Button
                 onClick={() => {
                   console.log("Update QR for", qrTcoinAmount);
@@ -233,79 +161,32 @@ export function MobileWalletDashboardComponent() {
                 Update QR Code
               </Button>
             </div>
-            <div className="flex space-x-2">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="flex-1">
-                    <LuUsers className="mr-2 h-4 w-4" /> Request from Contact
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Request from Contact</DialogTitle>
-                    <DialogDescription>Select a contact to request TCOIN from.</DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <Input placeholder="Search contacts..." />
-                    {contacts.map((contact) => {
-                      return (
-                        <Radio
-                          name="contact-selection"
-                          key={contact.id}
-                          label={contact.label}
-                          value={contact.value}
-                          onValueChange={setSelectedContact}
-                          id={contact.id}
-                        />
-                      );
-                    })}
+            <div className="flex flex-col space-y-4 sm:space-x-2 sm:space-y-0 sm:flex-row">
+              <Button
+                className="flex-1"
+                onClick={() => {
+                  openModal({
+                    content: <ContactSelectModal closeModal={closeModal} amount={qrTcoinAmount} method="Request" />,
+                    title: "Request from Contact",
+                    description: "Select a contact to request TCOIN from.",
+                  });
+                }}
+              >
+                <LuUsers className="mr-2 h-4 w-4" /> Request from Contact
+              </Button>
 
-                    <Button
-                      className="w-full"
-                      disabled={!selectedContact}
-                      onClick={() => console.log(`Requesting ${qrTcoinAmount} from ${selectedContact}`)}
-                    >
-                      Request {qrTcoinAmount}
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="flex-1">
-                    <LuShare2 className="mr-2 h-4 w-4" /> Share
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Share QR Code</DialogTitle>
-                    <DialogDescription>Share your QR code via different methods.</DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <Button className="w-full">Share via Email</Button>
-                    <Button className="w-full">Share via SMS</Button>
-                    <Button
-                      className="w-full"
-                      onClick={() => {
-                        navigator.clipboard
-                          .writeText("https://example.com/qr-code-link")
-                          .then(() => {
-                            toast.success("The QR code link has been copied to your clipboard.");
-                            // toast({
-                            // title: "Link copied",  // Uncomment this line to show a title, but requires import of useToast instead of react-toastify
-                            //description: "The QR code link has been copied to your clipboard.", // Uncomment this line to show a description
-                            // })
-                          })
-                          .catch((err) => {
-                            console.error("Failed to copy: ", err);
-                          });
-                      }}
-                    >
-                      Copy Link
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+              <Button
+                className="flex-1"
+                onClick={() => {
+                  openModal({
+                    content: <ShareQrModal closeModal={closeModal} />,
+                    title: "Share QR Code",
+                    description: "Share your QR code via different methods.",
+                  });
+                }}
+              >
+                <LuShare2 className="mr-2 h-4 w-4" /> Share
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -315,22 +196,22 @@ export function MobileWalletDashboardComponent() {
             <CardTitle>Pay / Send</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button className="w-full">
-                  <LuCamera className="mr-2 h-4 w-4" /> Scan QR to Pay
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Scan QR Code</DialogTitle>
-                  <DialogDescription>Use your device's camera to scan a QR code for payment.</DialogDescription>
-                </DialogHeader>
-                <div className="flex items-center justify-center h-64 bg-gray-100 rounded-md">Camera feed would appear here</div>
-              </DialogContent>
-            </Dialog>
+            <Button
+              className="w-full"
+              onClick={() => {
+                openModal({
+                  content: <QrScanModal closeModal={closeModal} />,
+                  title: "Scan QR to Pay",
+                  description: "Use your device's camera to scan a QR code for payment.",
+                });
+              }}
+            >
+              <LuCamera className="mr-2 h-4 w-4" /> Scan QR to Pay
+            </Button>
             <div className="space-y-2">
               <Input
+                className="w-full"
+                elSize="md"
                 name="tcoin"
                 value={tcoinAmount}
                 onChange={(e) => handleAmountChange(e, setCadAmount, setTcoinAmount)}
@@ -338,44 +219,25 @@ export function MobileWalletDashboardComponent() {
               />
               <Input
                 name="cad"
+                elSize="md"
+                className="w-full"
                 value={cadAmount}
                 onChange={(e) => handleAmountChange(e, setCadAmount, setTcoinAmount)}
                 placeholder="Enter CAD amount"
               />
             </div>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button className="w-full">
-                  <LuSend className="mr-2 h-4 w-4" /> Send to Contact
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Send to Contact</DialogTitle>
-                  <DialogDescription>Select a contact to send TCOIN to.</DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <Input placeholder="Search contacts..." />
-                  <ul className="space-y-2">
-                    <li>
-                      <Button variant="ghost" className="w-full justify-start">
-                        Alice
-                      </Button>
-                    </li>
-                    <li>
-                      <Button variant="ghost" className="w-full justify-start">
-                        Bob
-                      </Button>
-                    </li>
-                    <li>
-                      <Button variant="ghost" className="w-full justify-start">
-                        Charlie
-                      </Button>
-                    </li>
-                  </ul>
-                </div>
-              </DialogContent>
-            </Dialog>
+            <Button
+              className="w-full"
+              onClick={() => {
+                openModal({
+                  content: <ContactSelectModal closeModal={closeModal} amount={tcoinAmount} method="Send" />,
+                  title: "Send to Contact",
+                  description: "Select a contact to send TCOIN to.",
+                });
+              }}
+            >
+              <LuSend className="mr-2 h-4 w-4" /> Send to Contact
+            </Button>
           </CardContent>
         </Card>
 
@@ -383,7 +245,7 @@ export function MobileWalletDashboardComponent() {
           <CardHeader>
             <CardTitle>My Account</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="overflow-auto mx-6 p-0">
             <Tabs className="w-full" variant="bordered">
               <TabTrigger name="tab_insight" ariaLabel="Graph" defaultChecked />
               <TabContent>
@@ -464,57 +326,30 @@ export function MobileWalletDashboardComponent() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="w-full">
-                    <LuCreditCard className="mr-2 h-4 w-4" /> Top Up with Interac eTransfer
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Top Up with Interac eTransfer</DialogTitle>
-                    <DialogDescription>Send an Interac eTransfer to top up your TCOIN balance.</DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <p>
-                      <strong>Destination email:</strong> topup@tcoin.me
-                    </p>
-                    <p>
-                      <strong>Reference number:</strong> {Math.random().toString(36).substring(2, 10).toUpperCase()}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Note: You must send the eTransfer from a bank account with the same owner as this TCOIN account. The balance will show up within
-                      24 hours.
-                    </p>
-                  </div>
-                </DialogContent>
-              </Dialog>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="w-full">
-                    <LuDollarSign className="mr-2 h-4 w-4" /> Convert TCOIN to CAD and Off-ramp
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Convert and Off-ramp</DialogTitle>
-                    <DialogDescription>Convert your TCOIN to CAD and transfer to your bank account.</DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <InputField
-                      label="Preferred Donation Amount (TCOIN)"
-                      name="preferredDonationAmount"
-                      value=""
-                      placeholder="Amount in TCOIN"
-                      onChange={(e) => {}}
-                    />
-                    <p>Estimated CAD: $0.00</p>
-                    <Input placeholder="Interac eTransfer email or phone" />
-                    <p className="text-sm text-gray-500">Note: The transfer will be completed within the next 24 hours.</p>
-                    <Button className="w-full">Convert and Transfer</Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+              <Button
+                className="w-full"
+                onClick={() => {
+                  openModal({
+                    content: <TopUpModal closeModal={closeModal} />,
+                    title: "Top Up with Interac eTransfer",
+                    description: "Send an Interac eTransfer to top up your TCOIN Balance.",
+                  });
+                }}
+              >
+                <LuCreditCard className="mr-2 h-4 w-4" /> Top Up with Interac eTransfer
+              </Button>
+              <Button
+                className="w-full"
+                onClick={() => {
+                  openModal({
+                    content: <OffRampModal closeModal={closeModal} />,
+                    title: "Convert and Off-ramp",
+                    description: "Convert your TCOIN to CAD and transfer to your bank account.",
+                  });
+                }}
+              >
+                <LuDollarSign className="mr-2 h-4 w-4" /> Convert TCOIN to CAD and Off-ramp
+              </Button>
             </div>
           </CardContent>
         </Card>

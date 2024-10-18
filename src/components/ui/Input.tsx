@@ -25,8 +25,8 @@ const inputVariants = cva("input bg-background", {
     },
   },
   defaultVariants: {
-    variant: "default",
-    elSize: "sm",
+    variant: "bordered",
+    elSize: "md",
   },
 });
 

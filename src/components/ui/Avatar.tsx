@@ -28,14 +28,12 @@ const imageVariants = cva("", {
 
 export interface AvatarProps extends React.ImgHTMLAttributes<HTMLImageElement>, VariantProps<typeof imageVariants> {}
 
-const Avatar = React.forwardRef<HTMLImageElement, AvatarProps>(({ className, variant, size, radius, ...props }, ref) => (
+const Avatar: React.FC<AvatarProps> = ({ className, variant, size, radius, ...props }) => (
   <div className={"avatar"}>
     <div className={cn(imageVariants({ variant, size, radius, className }))}>
-      <img ref={ref} {...props} />
+      <img {...props} />
     </div>
   </div>
-));
-
-Avatar.displayName = "Avatar";
+);
 
 export { Avatar };

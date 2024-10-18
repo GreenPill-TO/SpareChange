@@ -121,7 +121,7 @@ function SignInModal({ closeModal }: SignInModalProps) {
 
   return (
     <div className="flex items-center rounded-xl">
-      <div className="grid grid-cols-1 md:grid-cols-2 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2">
         <ImageCarousel images={constants.SIGN_UP_IMAGES} />
         <div className="md:p-10 pb-12">
           <OTPForm

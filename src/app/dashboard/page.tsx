@@ -6,7 +6,7 @@ import { WalletScreen } from "./screens";
 export default function Dashboard() {
   const { userData, error, isLoadingUser } = useAuth();
 
-  const mainClass = "p-8";
+  const mainClass = "p-4 sm:p-8";
 
   const screenContent = useMemo(() => {
     if (isLoadingUser || error) return null;

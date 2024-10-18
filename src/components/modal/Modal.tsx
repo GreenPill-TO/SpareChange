@@ -1,60 +1,39 @@
-import { useModal } from "@/contexts/ModalContext";
+// Modal.tsx
+import { ModalContentType } from "@/contexts/ModalContext";
 import { cn } from "@/lib/classnames";
-import React, { useEffect, useMemo, useRef } from "react";
-import { LuX } from "react-icons/lu";
-import { Card } from "../ui/Card";
+import React from "react";
 
 interface ModalProps {
-  onClose: () => void;
-  children: React.ReactNode;
-  closeOnOutside?: boolean;
-  size?: "small" | "medium" | "large";
+  modalContent: ModalContentType | null;
+  closeModal: () => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ onClose, children, closeOnOutside = true, size = "small" }) => {
-  const { isOpen } = useModal();
-
-  const modalRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node) && closeOnOutside) {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    // Cleanup event listener when modal is closed or component is unmounted
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen, onClose]);
-
-  const modalWidthClass = useMemo(() => {
-    switch (size) {
-      case "small":
-        return "max-w-sm";
-      case "large":
-        return "max-w-4xl";
-      default:
-        return "max-w-lg";
-    }
-  }, [size]);
+const Modal: React.FC<ModalProps> = ({ modalContent, closeModal }) => {
+  const sizeClasses = {
+    sm: "max-w-sm",
+    md: "max-w-md",
+    lg: "max-w-lg",
+    xl: "max-w-xl",
+    "2xl": "max-w-2xl",
+    "4xl": "max-w-4xl",
+  };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 dark:bg-opacity-50 flex">
-      <Card
-        className={cn("relative p-4 m-auto flex-col flex rounded-lg shadow-lg", "max-h-screen4/5 overflow-auto", "text-primary", modalWidthClass)}
-        ref={modalRef}
-      >
-        <button onClick={onClose} className="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
-          <LuX width={24} height={24} />
-        </button>
-        {children}
-      </Card>
+    <div className={cn("modal modal-open text-foreground", modalContent?.isResponsive ? "modal-bottom sm:modal-middle" : "")}>
+      <div className={cn("modal-box bg-card", modalContent?.elSize ? sizeClasses[modalContent?.elSize] : "w-content")}>
+        <h2 className="font-bold text-lg modal-title">{modalContent?.title}</h2>
+        <p className="text-sm text-muted-foreground">{modalContent?.description}</p>
+        <div className="mt-4">{modalContent?.content}</div>
+        <div className="modal-action mt-0">
+          {/* <button onClick={closeModal} className="btn">
+            Close
+          </button> */}
+          <button onClick={closeModal} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+            ✕
+          </button>
+        </div>
+      </div>
+      <div className="modal-backdrop" onClick={closeModal}></div>
     </div>
   );
 };

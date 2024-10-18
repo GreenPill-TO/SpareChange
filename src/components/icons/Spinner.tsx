@@ -5,14 +5,7 @@ type TSpinner = {
 
 export const Spinner = ({ width = 20, height = 20 }: TSpinner) => {
   return (
-    <svg
-      width={width}
-      height={height}
-      className="animate-spin -ml-1 mr-3 text-white"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
+    <svg width={width} height={height} className="animate-spin -ml-1 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path
         className="opacity-75"

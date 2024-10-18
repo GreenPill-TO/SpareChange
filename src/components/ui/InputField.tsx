@@ -1,3 +1,4 @@
+import { cn } from "@/lib/classnames";
 import React from "react";
 import { Input } from "./Input";
 import { Label } from "./Label";
@@ -11,6 +12,7 @@ interface InputFieldProps {
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
+  fullWidth?: boolean;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -22,13 +24,15 @@ const InputField: React.FC<InputFieldProps> = ({
   placeholder = "",
   required = false,
   disabled = false,
+  fullWidth = false,
 }) => {
   return (
-    <div className="text-field mb-4">
+    <div className={cn("text-field mb-4")}>
       <Label htmlFor={name} className="mr-2">
         {label}
       </Label>
       <Input
+        className={fullWidth ? "w-full" : ""}
         variant="bordered"
         id={name}
         name={name}

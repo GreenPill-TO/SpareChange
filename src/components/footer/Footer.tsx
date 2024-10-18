@@ -6,7 +6,7 @@ export function Footer() {
   const { openModal } = useModal();
 
   const handleOpenModal = (filePath: string) => {
-    openModal({ content: <MarkdownViewer filePath={filePath} />, size: "large" });
+    openModal({ content: <MarkdownViewer filePath={filePath} /> });
   };
 
   return (
