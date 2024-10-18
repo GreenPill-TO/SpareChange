@@ -1,4 +1,3 @@
-import classNames from "classnames";
 import React from "react";
 import { Input } from "./Input";
 import { Label } from "./Label";
@@ -24,16 +23,13 @@ const InputField: React.FC<InputFieldProps> = ({
   required = false,
   disabled = false,
 }) => {
-  const inputClasses = classNames(
-    "mt-1 block w-full rounded-md shadow-sm",
-    "focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50",
-    "dark:bg-gray-700 dark:text-white dark:border-gray-600 bg-white text-gray-900 border-gray-300"
-  );
-
   return (
     <div className="text-field mb-4">
-      <Label htmlFor={name}>{label}</Label>
+      <Label htmlFor={name} className="mr-2">
+        {label}
+      </Label>
       <Input
+        variant="bordered"
         id={name}
         name={name}
         type={type}
@@ -42,8 +38,6 @@ const InputField: React.FC<InputFieldProps> = ({
         placeholder={placeholder}
         required={required}
         disabled={disabled}
-        className={inputClasses}
-        style={{ borderWidth: "1px" }}
       />
     </div>
   );

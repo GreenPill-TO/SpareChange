@@ -1,5 +1,5 @@
-import Dropdown from "@/components/ui/Dropdown";
 import InputField from "@/components/ui/InputField";
+import { Select } from "@/components/ui/Select";
 import React, { useEffect } from "react";
 
 interface DonationPreferencesStepProps {
@@ -66,11 +66,12 @@ export const DonationPreferencesStep: React.FC<DonationPreferencesStepProps> = (
         placeholder="25%"
         onChange={handleGoodTipChange}
       />
-      <Dropdown
+      <Select
+        variant="bordered"
         label="Select Your Cause"
         name="selectedCause"
         value={selectedCause}
-        onChange={(e) => setSelectedCause(e.target.value)}
+        onValueChange={(v) => setSelectedCause(v)}
         options={[
           { label: "Select", value: "" },
           { label: "Food Bank", value: "Food Bank" },

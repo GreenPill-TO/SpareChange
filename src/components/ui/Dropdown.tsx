@@ -20,7 +20,7 @@ const Dropdown: React.FC<DropdownProps> = ({ label, name, value, onChange, optio
 
   return (
     <div className="dropdown mb-4">
-      <label htmlFor={name} className={`block text-sm font-medium dark:text-white text-gray-700`}>
+      <label htmlFor={name} className={`text-sm font-medium dark:text-white text-gray-700`}>
         {label}
       </label>
       <select id={name} name={name} value={value} onChange={onChange} required={required} disabled={disabled} className={dropdownClasses}>

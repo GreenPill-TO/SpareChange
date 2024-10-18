@@ -1,14 +1,16 @@
-import Dropdown from "@/components/ui/Dropdown";
 import InputField from "@/components/ui/InputField";
+import { Select } from "@/components/ui/Select";
 import React, { useEffect } from "react";
 
 interface StoreProfileStepProps {
   fullName: string;
   phoneNumber: string;
   address: string;
+  category: string;
   setFullName: (value: string) => void;
   setPhoneNumber: (value: string) => void;
   setAddress: (value: string) => void;
+  setCategory: (v: string) => void;
   setIsNextEnabled: (isEnabled: boolean) => void;
   nextStep: () => void;
 }
@@ -17,9 +19,11 @@ export const StoreProfileStep: React.FC<StoreProfileStepProps> = ({
   fullName,
   phoneNumber,
   address,
+  category,
   setFullName,
   setPhoneNumber,
   setAddress,
+  setCategory,
   setIsNextEnabled,
 }) => {
   useEffect(() => {
@@ -32,11 +36,12 @@ export const StoreProfileStep: React.FC<StoreProfileStepProps> = ({
     <div className={`p-6 space-y-6`}>
       <h2 className="text-2xl font-bold">Profile Your Store</h2>
       <InputField label="Store Name" name="storeName" value={fullName} onChange={(e) => setFullName(e.target.value)} />
-      <Dropdown
+      <Select
+        variant="bordered"
         label="Category"
         name="category"
-        value={phoneNumber}
-        onChange={(e) => setPhoneNumber(e.target.value)}
+        value={category}
+        onValueChange={(v) => setCategory(v)}
         options={[
           { label: "Restaurant", value: "restaurant" },
           { label: "Retail", value: "retail" },

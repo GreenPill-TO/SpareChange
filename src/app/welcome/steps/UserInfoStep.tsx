@@ -78,15 +78,15 @@ export const UserInfoStep: React.FC<UserInfoStepProps> = ({
   return (
     <div className="user-info-step">
       <h2 className="text-2xl font-bold mb-4">Complete Your Profile</h2>
-      <p className="mb-4 text-gray-600">
+      <p className="mb-4">
         Your full name will only be visible to users who have mutually connected with you. Your username will be publicly visible to all users.
       </p>
-      <InputField label="Full Name" name="fullName" value={fullName} onChange={handleFullNameChange} />
-      <InputField label="Username" name="username" value={username} onChange={handleUserNameChange} />
+      <InputField label="Full Name: " name="fullName" value={fullName} onChange={handleFullNameChange} />
+      <InputField label="Username: " name="username" value={username} onChange={handleUserNameChange} />
       {authMethod === "phone" ? (
-        <InputField label="Phone Number" name="phoneNumber" value={phoneNumber} onChange={handlePhoneNumberChange} />
+        <InputField label="Phone Number: " name="phoneNumber" value={phoneNumber} onChange={handlePhoneNumberChange} />
       ) : (
-        <InputField label="Email" name="email" value={email} onChange={handleEmailChange} />
+        <InputField label="Email: " name="email" value={email} onChange={handleEmailChange} />
       )}
     </div>
   );

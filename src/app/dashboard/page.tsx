@@ -1,7 +1,7 @@
 "use client";
 import { useAuth } from "@/api/hooks/useAuth";
 import { useMemo } from "react";
-import { DonorScreen, PanhandlerScreen, WalletScreen } from "./screens";
+import { WalletScreen } from "./screens";
 
 export default function Dashboard() {
   const { userData, error, isLoadingUser } = useAuth();
@@ -12,10 +12,10 @@ export default function Dashboard() {
     if (isLoadingUser || error) return null;
 
     switch (userData?.cubidData?.persona) {
-      case "ph1":
-        return <PanhandlerScreen />;
-      case "dr":
-        return <DonorScreen />;
+      // case "ph":
+      //   return <PanhandlerScreen />;
+      // case "dr":
+      //   return <DonorScreen />;
       default:
         return <WalletScreen />;
     }

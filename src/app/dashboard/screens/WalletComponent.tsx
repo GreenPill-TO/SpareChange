@@ -1,5 +1,6 @@
 "use client";
 
+import { QrScanModal } from "@/components/modal";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
@@ -10,6 +11,7 @@ import { Label } from "@/components/ui/Label";
 import { Radio } from "@/components/ui/Radio";
 import { Switch } from "@/components/ui/Switch";
 import { TabContent, Tabs, TabTrigger } from "@/components/ui/Tabs";
+import { useModal } from "@/contexts/ModalContext";
 import { useState } from "react";
 import { LuCamera, LuCreditCard, LuDollarSign, LuQrCode, LuSend, LuShare2, LuUsers } from "react-icons/lu";
 import { toast } from "react-toastify";
@@ -52,6 +54,7 @@ const contacts = [
 ];
 
 export function MobileWalletDashboardComponent() {
+  const { openModal, closeModal } = useModal();
   const [balance, setBalance] = useState(1000);
   const [qrTcoinAmount, setQrTcoinAmount] = useState("");
   const [qrCadAmount, setQrCadAmount] = useState("");
@@ -111,20 +114,15 @@ export function MobileWalletDashboardComponent() {
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">TCOIN Wallet</h1>
         <div className="flex space-x-2">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <LuCamera className="h-6 w-6" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Scan QR Code</DialogTitle>
-                <DialogDescription>Use your device's camera to scan a QR code for payment.</DialogDescription>
-              </DialogHeader>
-              <div className="flex items-center justify-center h-64 bg-gray-100 rounded-md">Camera feed would appear here</div>
-            </DialogContent>
-          </Dialog>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              openModal({ content: <QrScanModal closeModal={closeModal} />, size: "medium" });
+            }}
+          >
+            <LuCamera className="h-6 w-6" />
+          </Button>
           <Dialog>
             <DialogTrigger asChild>
               <Avatar src="https://github.com/shadcn.png" alt="@shadcn" />

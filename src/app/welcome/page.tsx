@@ -30,6 +30,7 @@ const initialFormData = {
   email: "",
   phone: "",
   address: "",
+  category: "Restaurant",
   bio: "",
   profile_image_url: null,
   preferred_donation_amount: 0,
@@ -46,7 +47,7 @@ const WelcomeFlow: React.FC = () => {
   const { userData } = useAuth();
 
   const [userFormData, setUserFormData] = useState<TCubidData>(
-    userData?.cubidData?.current_step && userData?.cubidData?.current_step > 1 ? { ...userData?.cubidData } : initialFormData
+    userData?.cubidData?.current_step && userData?.cubidData?.current_step > 1 ? { ...initialFormData, ...userData?.cubidData } : initialFormData
   );
 
   const [isNextEnabled, setIsNextEnabled] = useState<boolean>(true);
@@ -188,6 +189,8 @@ const WelcomeFlow: React.FC = () => {
                     fullName={userFormData.full_name}
                     phoneNumber={userFormData.phone}
                     address={userFormData.address}
+                    category={userFormData.category}
+                    setCategory={(v) => updateUserFormField("category", v)}
                     setFullName={(v) => updateUserFormField("full_name", v)}
                     setPhoneNumber={(v) => updateUserFormField("phone", v)}
                     setAddress={(v) => updateUserFormField("address", v)}
