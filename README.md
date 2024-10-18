@@ -57,11 +57,13 @@ Then follow these steps to set up and start developing your project:
      NEXT_PUBLIC_CUBID_API_KEY=<your-cubid-api-key>
      ```
 
-5. **Sign In and Experiment with the Cubid APIs**
+5. **Sign In and Start Experimenting**
 
    - Sign in to your deployed app.
-   - Experiment with the Cubid APIs to familiarize yourself with the available functionalities.
+   - Get user identifiers from the Cubid APIs.
+   - Auth and session data saves to supabase
 
 6. **Start Developing**
    - Begin developing your project by adding new features, fixing bugs, and improving the codebase.
    - Use the documentation and resources available for Supabase and Cubid to aid your development process.
+   - Pull Request any new features you'd like to see added. Be sure to add plenty of documentation describing your changes.
